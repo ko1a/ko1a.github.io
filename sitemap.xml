@@ -3,17 +3,12 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://ko1a.github.io/post/blog/</loc>
-    <lastmod>2021-02-03T18:44:17+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ko1a.github.io/post/blog2/</loc>
-    <lastmod>2021-02-03T18:44:17+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://ko1a.github.io/post/</loc>
+    <lastmod>2021-02-03T18:44:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/post/blog1/</loc>
     <lastmod>2021-02-03T18:44:17+08:00</lastmod>
   </url>
   
