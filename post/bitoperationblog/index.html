@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>java中的位运算 // 阿强的blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.80.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="wangqiang" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://ko1a.github.io/css/main.min.4c1a909e6fe10d8fe1d9033af603c9b9a7803efa8046860032882a48f84a40f1.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="java中的位运算"/>
+<meta name="twitter:description" content="写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
+static final int hash(Object key) { int h; return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16); } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
+关于二进制 一切的起源都要从二进制开始&hellip;在了解位之前,有必要先知道二进制的概念
+百度百科:二进制
+Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API
+public static void main(String[] args) { int num = 168; //十进制转二进制  System.out.println(Integer.toBinaryString(num)); //十进制转八进制  System.out.println(Integer.toOctalString(num)); //十进制转十六进制  System.out.println(Integer.toHexString(num)); //二进制转十进制  System."/>
+
+    <meta property="og:title" content="java中的位运算" />
+<meta property="og:description" content="写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
+static final int hash(Object key) { int h; return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16); } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
+关于二进制 一切的起源都要从二进制开始&hellip;在了解位之前,有必要先知道二进制的概念
+百度百科:二进制
+Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API
+public static void main(String[] args) { int num = 168; //十进制转二进制  System.out.println(Integer.toBinaryString(num)); //十进制转八进制  System.out.println(Integer.toOctalString(num)); //十进制转十六进制  System.out.println(Integer.toHexString(num)); //二进制转十进制  System." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ko1a.github.io/post/bitoperationblog/" />
+<meta property="article:published_time" content="2020-05-20T18:02:17+08:00" />
+<meta property="article:modified_time" content="2020-05-20T18:02:17+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://ko1a.github.io/"><img class="app-header-avatar" src="https://pic4.zhimg.com/80/v2-2f47aaadf2eef73c77a4497a67181854_1440w.jpg?source=1940ef5c" alt="wangqiang" /></a>
+      <h1>阿强的blog</h1>
+      <p>go for it</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">java中的位运算</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 20, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://ko1a.github.io/tags/java/">java</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="写在前面的话">写在前面的话</h2>
+<p>关于位运算,有一种<strong>既熟悉又陌生</strong>的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hash</span><span style="color:#f92672">(</span>Object key<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> h<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>key <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 0 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">())</span> <span style="color:#f92672">^</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>陌生是因为日常开发中,大概率是不会去使用它. <em><strong>结论:你可以不去使用它,但你必须得懂它</strong></em></p>
+<h2 id="关于二进制">关于二进制</h2>
+<p>一切的起源都要从二进制开始&hellip;在了解位之前,有必要先知道二进制的概念</p>
+<p><a href="https://baike.baidu.com/item/%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0/108101?fr=aladdin">百度百科:二进制</a></p>
+<h3 id="java-中的二进制">Java 中的二进制</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//举个例子:
+</span><span style="color:#75715e">//int占4个字节（byte）
+</span><span style="color:#75715e">//1byte = 8bit
+</span><span style="color:#75715e">//换算下来，一个int类型即占32bit
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 5<span style="color:#f92672">;</span> <span style="color:#75715e">//这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101
+</span></code></pre></div><p>Java 提供了进制转换的API</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> 168<span style="color:#f92672">;</span>
+    <span style="color:#75715e">//十进制转二进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>num<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//十进制转八进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toOctalString</span><span style="color:#f92672">(</span>num<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//十进制转十六进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toHexString</span><span style="color:#f92672">(</span>num<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//二进制转十进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;10101000&#34;</span><span style="color:#f92672">,</span>2<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//八进制转十进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;250&#34;</span><span style="color:#f92672">,</span>8<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//十六进制转十进制
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a8&#34;</span><span style="color:#f92672">,</span>16<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">10101000
+250
+a8
+168
+168
+168
+</code></pre></div><p>在Java7版本以前，Java是不支持直接书写除十进制以外的其它进制字面量。但这在Java7以及以后版本就允许了：</p>
+<ul>
+<li>二进制：前置0b/0B</li>
+<li>八进制：前置0</li>
+<li>十进制：默认的，无需前置</li>
+<li>十六进制：前置0x/0X</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">//二进制
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0B101<span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span> <span style="color:#75715e">//5
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>i<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//八进制
+</span><span style="color:#75715e"></span>    i <span style="color:#f92672">=</span> 0101<span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span> <span style="color:#75715e">//65
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>i<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//十进制
+</span><span style="color:#75715e"></span>    i <span style="color:#f92672">=</span> 101<span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span> <span style="color:#75715e">//101
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>i<span style="color:#f92672">));</span>
+    <span style="color:#75715e">//十六进制
+</span><span style="color:#75715e"></span>    i <span style="color:#f92672">=</span> 0x101<span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span> <span style="color:#75715e">//257
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>i<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">5
+101
+65
+1000001
+101
+1100101
+257
+100000001
+</code></pre></div><h3 id="原码-反码-补码">原码 反码 补码</h3>
+<p><a href="https://baike.baidu.com/item/%E5%8F%8D%E7%A0%81">来自百度百科的解释</a></p>
+<pre><code>在计算机内，有符号数有三种表示法：原码、反码以及补码。
+ 原码：就是二进制定点表示法，即最高位为符号位，“0”正负“1”，其余位表示数值的大小。
+ 反码：正数的反码与其原码相同；负数的反码是对正数逐位取反，符号位保持为1。
+ 补码：正数的补码与其原码相同；负数的补码是在其反码的末位加1。
+</code></pre><p>我们已经知道了一个 int 型数值是 4 个字节。每个字节有 8 位。但对于一个 int 或者其它整数类型如 （long）的数值而言还要注意的是，它的最高位是符号位。</p>
+<ul>
+<li>最高位为0表示正数。</li>
+<li>最高位为1表示负数</li>
+</ul>
+<p><strong>原码</strong> 将一个数字转换成二进制就是这个数值的原码。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span>5<span style="color:#f92672">;</span> <span style="color:#75715e">//原码  0000 0000 0000 0000 0000 0000 0000 0101
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> b <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//原码  1000 0000 0000 0000 0000 0000 0000 0101
+</span></code></pre></div><p><strong>反码</strong>
+分两种情况：正数和负数</p>
+<ul>
+<li>正数 正数的反码就是原码。</li>
+<li>负数 负数的反码是在原码的基础上，符号位不变 其它位都取反。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span>5<span style="color:#f92672">;</span> <span style="color:#75715e">//原码、反码：0000 0000 0000 0000 0000 0000 0000 0101
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//原码：1000 0000 0000 0000 0000 0000 0000 0101
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//反码：1111 1111 1111 1111 1111 1111 1111 1010
+</span></code></pre></div><p><strong>补码</strong>
+仍然分正数和负数两种情况</p>
+<ul>
+<li>正数 正数的补码就是原码。</li>
+<li>负数 负数的补码在反码的基础上加1。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span>5<span style="color:#f92672">;</span> <span style="color:#75715e">//原码、反码：0000 0000 0000 0000 0000 0000 0000 0101
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//原码：1000 0000 0000 0000 0000 0000 0000 0101
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//反码：1111 1111 1111 1111 1111 1111 1111 1010
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//补码：1111 1111 1111 1111 1111 1111 1111 1011
+</span></code></pre></div><p><strong>在Java中，负数是用补码来表示</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>5<span style="color:#f92672">;</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>i<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">11111111111111111111111111111011
+</code></pre></div><p><strong>计算机在进行数值运算的时候，是通过补码表示每个数值的。</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//比如:5 - 3 = 2
+</span><span style="color:#75715e">//实际上计算机是这样算的:5+(-3)=2
+</span><span style="color:#75715e"></span>00000000000000000000000000000101<span style="color:#f92672">+</span>11111111111111111111111111111011<span style="color:#f92672">=</span>1 00000000000000000000000000000010
+</code></pre></div><p>最后的结果是1 0000 0000 0000 0000 0000 0000 0000 0010 这样的二进制，由于 int 类型只有 4 byte，所以最高位产生了溢出，进位 1 被丢弃。结果就变成了 0010 也就是 2。</p>
+<h2 id="java位运算">Java位运算</h2>
+<p>运算符的运算规则表:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">操作符</th>
+<th style="text-align:left">规则描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">&amp;</td>
+<td style="text-align:left">如果相对应位都是1，则结果为1，否则为0</td>
+</tr>
+<tr>
+<td style="text-align:left">I</td>
+<td style="text-align:left">如果相对应位都是0，则结果为0，否则为1</td>
+</tr>
+<tr>
+<td style="text-align:left">^</td>
+<td style="text-align:left">如果相对应位值相同，则结果为0，否则为1</td>
+</tr>
+<tr>
+<td style="text-align:left">~</td>
+<td style="text-align:left">按位取反运算符翻转操作数的每一位，即0变成1，1变成0</td>
+</tr>
+<tr>
+<td style="text-align:left">&laquo;</td>
+<td style="text-align:left">按位左移运算符。左操作数按位左移右操作数指定的位数</td>
+</tr>
+<tr>
+<td style="text-align:left">&raquo;</td>
+<td style="text-align:left">按位右移运算符。左操作数按位右移右操作数指定的位数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="按位与">&amp;:按位与</h4>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span><span style="color:#75715e">//1000
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 9<span style="color:#f92672">;</span><span style="color:#75715e">//1001
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:1000=8
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">&amp;</span> b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">&amp;</span> b<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:1000
+b的二进制:1001
+二进制结果:1000
+十进制结果:8
+</code></pre></div><h4 id="按位或">|：按位或</h4>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span><span style="color:#75715e">//1000
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 9<span style="color:#f92672">;</span><span style="color:#75715e">//1001
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:1001=9
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">|</span> b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">|</span> b<span style="color:#f92672">));</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:1000
+b的二进制:1001
+二进制结果:1001
+十进制结果:9
+
+</code></pre></div><h4 id="按位取反">^:按位取反</h4>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span><span style="color:#75715e">//1000
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> 9<span style="color:#f92672">;</span><span style="color:#75715e">//1001
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:0001=1
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;b的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">^</span> b<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">^</span> b<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:1000
+b的二进制:1001
+二进制结果:1
+十进制结果:1
+</code></pre></div><h4 id="按位左移">&laquo;:按位左移</h4>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span><span style="color:#75715e">//1000
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//左移n位,右边补n个0
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:1000 00 = 32
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">&lt;&lt;</span> 2<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">&lt;&lt;</span> 2<span style="color:#f92672">));</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:1000
+二进制结果:100000
+十进制结果:32
+</code></pre></div><h4 id="按位右移">&raquo;:按位右移</h4>
+<p>举个栗子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span><span style="color:#75715e">//1000
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//正数:右移n位,右边抹掉n位,左边高位补n个0
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:10 = 2
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;</span> 2<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;</span>2<span style="color:#f92672">));</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:1000
+二进制结果:10
+十进制结果:2
+</code></pre></div><p><strong>负数右移高位补1</strong></p>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>8<span style="color:#f92672">;</span><span style="color:#75715e">//11111111111111111111111111111000 负数补码
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//负数:右移n位,右边抹掉n位,左边高位补n个1
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:-2
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span><span style="color:#75715e">//负数补码
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;</span> 2<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;</span>2<span style="color:#f92672">));</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:11111111111111111111111111111000
+二进制结果:11111111111111111111111111111110
+十进制结果:<span style="color:#f92672">-</span>2
+</code></pre></div><h4 id="无符号右移">&raquo;&gt;:无符号右移</h4>
+<ul>
+<li>正数:正数右移和无符号右移没有区别</li>
+<li>负数:无符号右移n位,左边高位补n个0</li>
+</ul>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>5<span style="color:#f92672">;</span><span style="color:#75715e">//11111111111111111111111111111011 负数补码
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//负数:右移n位,右边抹掉n位,符号位补0
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//结果:00111111111111111111111111111110
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a的二进制:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a<span style="color:#f92672">));</span><span style="color:#75715e">//负数是补码
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;二进制结果:&#34;</span> <span style="color:#f92672">+</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">toBinaryString</span><span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;&gt;</span> 2<span style="color:#f92672">));</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;十进制结果:&#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>a <span style="color:#f92672">&gt;&gt;&gt;</span> 2<span style="color:#f92672">));</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>输出结果:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:11111111111111111111111111111011
+二进制结果:00111111111111111111111111111110
+十进制结果:1073741822
+
+</code></pre></div><p><strong>总结:有符号、无符号 看的就是二进制的符号位， 无符号:就不管符号位，右移只填充0；有符号，就是符号位是啥，我就填充啥</strong></p>
+<h2 id="结语">结语</h2>
+<p>位运算是计算机最擅长的运算，jdk的源码中也大量地使用了它，搞明白它有助于更方便的阅读底层代码,提高自己的技能</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

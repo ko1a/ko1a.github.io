@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hashMap on 阿强的blog</title>
+    <link>https://ko1a.github.io/tags/hashmap/</link>
+    <description>Recent content in hashMap on 阿强的blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 19 Jun 2020 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/hashmap/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>手撕HashMap</title>
+      <link>https://ko1a.github.io/post/blog2hashmap/</link>
+      <pubDate>Fri, 19 Jun 2020 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/blog2hashmap/</guid>
+      <description>概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
+ 一、基础知识   数组
+数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
+优点:
+ 可以保存若干个数据 随机访问的效率很高。根据下标访问元素效率高（元素连续分配空间）。  缺点:
+ 数组的元素的类型必须一致 数组定长，不能自动扩容 删除元素、插入元素效率比较低，需要移动大量的元素    链表
+链表在内存中不是连续的空间,每一块空间有一块引用保存下一块内存的地址
+图是单链表
+优点:
+ 任意加减元素 添加或者删除元素时只需要改变前后两个元素结点的指针域指向地址即可 添加，删除效率高  缺点:
+ 因为含有大量的指针域，占用空间较大 查找元素需要遍历链表来查找    散列表
+散列表结构基于 数组+链表 ,整合了数组的快速索引和链表的动态扩容的优势
+  什么是哈希(hash)
+hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash算法变成固定长度的输出.这个映射规则就是对应的hash算法,原始数据映射后的二进制串就是哈希值(hashCode)
+特点:
+  从hash值不能反向推导出原始数据
+  输入的数据微小变化会得到完全不同的hash值,相同的数据会得到相同的hash值
+  hash算法的执行效率高,长文本也能快速计算hash值
+  hash算法的冲突概率要小
+   hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
+比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
+  二、底层原理 三、手撕源码 </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>github on 阿强的blog</title>
+    <link>https://ko1a.github.io/tags/github/</link>
+    <description>Recent content in github on 阿强的blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 20 May 2020 18:02:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>搭建属于自己的博客,想xio习的盆友赶紧上车!!!😻😻👍👍</title>
+      <link>https://ko1a.github.io/post/blog1/</link>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/blog1/</guid>
+      <description>写在前面的话 相信很多小伙伴都想要有一个属于自己的博客,那么今天,我将出一期教程.来教大家如何搭建一个超酷的博客.并且可以通过公网来访问.
+前期准备工作  在我们正式开始之前,首先请大家准备自己的github 账号和电脑上安装git软件
+Github官网
+Git下载地址
+该注册的注册,该安装的安装&amp;hellip;.
+正式开始  1.安装hugo  mac os 安装 brew install hugo 如果你电脑没安装brew工具 ,那就去安装一下就行啦,不懂请百度~
+Windows 安装 下载地址 找到windows版本下载即可
+2.Hugo是否安装成功  安装完成之后,输入hugo version命令查看是否安装成功,如果安装成功会显示版本
+hugo version Hugo Static Site Generator v0.80.0/extended darwin/amd64 BuildDate: unknown 3.使用hugo创建博客  hugo 安装成功后，使用hugo new site 命令创建博客
+hugo new site myblog 这个命令会创建一个名为myblog 的博客根目录
+├── archetypes │ └── default.md ├── config.toml # 博客站点的配置文件 ├── content # 博客文章所在目录 ├── data # 数据 ├── layouts # 网站布局 ├── static # 静态文件 └── themes # 博客主题 4.</description>
+    </item>
+    
+  </channel>
+</rss>

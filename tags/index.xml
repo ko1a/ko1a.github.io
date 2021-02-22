@@ -5,6 +5,52 @@
     <link>https://ko1a.github.io/tags/</link>
     <description>Recent content in Tags on 阿强的blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://ko1a.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Fri, 19 Jun 2020 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hashMap</title>
+      <link>https://ko1a.github.io/tags/hashmap/</link>
+      <pubDate>Fri, 19 Jun 2020 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/hashmap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
+      <link>https://ko1a.github.io/tags/java/</link>
+      <pubDate>Fri, 19 Jun 2020 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>blog</title>
+      <link>https://ko1a.github.io/tags/blog/</link>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>github</title>
+      <link>https://ko1a.github.io/tags/github/</link>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hugo</title>
+      <link>https://ko1a.github.io/tags/hugo/</link>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/hugo/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

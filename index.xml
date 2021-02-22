@@ -6,22 +6,66 @@
     <description>Recent content on 阿强的blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Feb 2021 18:44:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 19 Jun 2020 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>手撕HashMap</title>
+      <link>https://ko1a.github.io/post/blog2hashmap/</link>
+      <pubDate>Fri, 19 Jun 2020 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/blog2hashmap/</guid>
+      <description>概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
+ 一、基础知识   数组
+数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
+优点:
+ 可以保存若干个数据 随机访问的效率很高。根据下标访问元素效率高（元素连续分配空间）。  缺点:
+ 数组的元素的类型必须一致 数组定长，不能自动扩容 删除元素、插入元素效率比较低，需要移动大量的元素    链表
+链表在内存中不是连续的空间,每一块空间有一块引用保存下一块内存的地址
+图是单链表
+优点:
+ 任意加减元素 添加或者删除元素时只需要改变前后两个元素结点的指针域指向地址即可 添加，删除效率高  缺点:
+ 因为含有大量的指针域，占用空间较大 查找元素需要遍历链表来查找    散列表
+散列表结构基于 数组+链表 ,整合了数组的快速索引和链表的动态扩容的优势
+  什么是哈希(hash)
+hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash算法变成固定长度的输出.这个映射规则就是对应的hash算法,原始数据映射后的二进制串就是哈希值(hashCode)
+特点:
+  从hash值不能反向推导出原始数据
+  输入的数据微小变化会得到完全不同的hash值,相同的数据会得到相同的hash值
+  hash算法的执行效率高,长文本也能快速计算hash值
+  hash算法的冲突概率要小
+   hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
+比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
+  二、底层原理 三、手撕源码 </description>
+    </item>
+    
+    <item>
+      <title>java中的位运算</title>
+      <link>https://ko1a.github.io/post/bitoperationblog/</link>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/bitoperationblog/</guid>
+      <description>写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
+static final int hash(Object key) { int h; return (key == null) ? 0 : (h = key.hashCode()) ^ (h &amp;gt;&amp;gt;&amp;gt; 16); } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
+关于二进制 一切的起源都要从二进制开始&amp;hellip;在了解位之前,有必要先知道二进制的概念
+百度百科:二进制
+Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API
+public static void main(String[] args) { int num = 168; //十进制转二进制  System.out.println(Integer.toBinaryString(num)); //十进制转八进制  System.out.println(Integer.toOctalString(num)); //十进制转十六进制  System.out.println(Integer.toHexString(num)); //二进制转十进制  System.</description>
+    </item>
+    
     <item>
       <title>搭建属于自己的博客,想xio习的盆友赶紧上车!!!😻😻👍👍</title>
       <link>https://ko1a.github.io/post/blog1/</link>
-      <pubDate>Wed, 03 Feb 2021 18:44:17 +0800</pubDate>
+      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
       
       <guid>https://ko1a.github.io/post/blog1/</guid>
-      <description>相信很多小伙伴都想要有一个属于自己的博客,那么今天,我将出一期教程.来教大家如何搭建一个超酷的博客.
-前期准备工作 在我们正式开始之前,首先请大家准备自己的github 账号和电脑上安装git软件
+      <description>写在前面的话 相信很多小伙伴都想要有一个属于自己的博客,那么今天,我将出一期教程.来教大家如何搭建一个超酷的博客.并且可以通过公网来访问.
+前期准备工作  在我们正式开始之前,首先请大家准备自己的github 账号和电脑上安装git软件
 Github官网
 Git下载地址
 该注册的注册,该安装的安装&amp;hellip;.
-正式开始 1.安装hugo mac os 安装 brew install hugo 如果你电脑没安装brew工具 ,那就去安装一下就行啦,不懂请百度~
+正式开始  1.安装hugo  mac os 安装 brew install hugo 如果你电脑没安装brew工具 ,那就去安装一下就行啦,不懂请百度~
 Windows 安装 下载地址 找到windows版本下载即可
-2.Hugo是否安装成功 安装完成之后,输入hugo version命令查看是否安装成功,如果安装成功会显示版本
-hugo version Hugo Static Site Generator v0.80.0/extended darwin/amd64 BuildDate: unknown 3.使用hugo创建博客 hugo 安装成功后，使用hugo new site 命令创建博客
+2.Hugo是否安装成功  安装完成之后,输入hugo version命令查看是否安装成功,如果安装成功会显示版本
+hugo version Hugo Static Site Generator v0.80.0/extended darwin/amd64 BuildDate: unknown 3.使用hugo创建博客  hugo 安装成功后，使用hugo new site 命令创建博客
 hugo new site myblog 这个命令会创建一个名为myblog 的博客根目录
 ├── archetypes │ └── default.md ├── config.toml # 博客站点的配置文件 ├── content # 博客文章所在目录 ├── data # 数据 ├── layouts # 网站布局 ├── static # 静态文件 └── themes # 博客主题 4.</description>
     </item>
