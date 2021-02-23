@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <title>手撕HashMap // 阿强的blog</title>
+    <title>手撕HashMap(Jdk8) // 阿强的blog</title>
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta charset="utf-8" />
     <meta name="generator" content="Hugo 0.80.0" />
@@ -12,7 +12,7 @@
 
     
     <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="手撕HashMap"/>
+<meta name="twitter:title" content="手撕HashMap(Jdk8)"/>
 <meta name="twitter:description" content="概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
  一、基础知识   数组
 数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
@@ -34,9 +34,10 @@ hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash�
   hash算法的冲突概率要小
    hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
 比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
-  二、底层原理 三、手撕源码 "/>
+  二、基本原理 存储结构 结构实现来讲，HashMap是数组&#43;链表&#43;红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。
+HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（或树形结构）组成。"/>
 
-    <meta property="og:title" content="手撕HashMap" />
+    <meta property="og:title" content="手撕HashMap(Jdk8)" />
 <meta property="og:description" content="概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
  一、基础知识   数组
 数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
@@ -58,7 +59,8 @@ hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash�
   hash算法的冲突概率要小
    hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
 比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
-  二、底层原理 三、手撕源码 " />
+  二、基本原理 存储结构 结构实现来讲，HashMap是数组&#43;链表&#43;红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。
+HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（或树形结构）组成。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ko1a.github.io/post/blog2hashmap/" />
 <meta property="article:published_time" content="2020-06-19T13:20:17+08:00" />
@@ -79,7 +81,7 @@ hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash�
       
   <article class="post">
     <header class="post-header">
-      <h1 class ="post-title">手撕HashMap</h1>
+      <h1 class ="post-title">手撕HashMap(Jdk8)</h1>
       <div class="post-meta">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
@@ -93,7 +95,7 @@ hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash�
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          1 min read
+          4 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -169,11 +171,194 @@ hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash�
 </li>
 </ul>
 <p>hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间</p>
-<p>比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理</p>
+<p>比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:<strong>抽屉原理</strong></p>
 </li>
 </ol>
-<h3 id="二底层原理">二、底层原理</h3>
-<h3 id="三手撕源码">三、手撕源码</h3>
+<h3 id="二基本原理">二、基本原理</h3>
+<h4 id="存储结构">存储结构</h4>
+<p>结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。</p>
+<p><img src="/images/3169099812-5a65971be70a6_articlex.png" alt="img"></p>
+<p>HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（或树形结构）组成。</p>
+<p>在添加元素时，会根据hash值算出元素在数组中的位置，如果该位置没有元素，则直接把元素放置在此处，如果该位置有元素了，则把元素以链表的形式放置在链表的尾部(JDK1.7是采用头插法,插在头部)。</p>
+<p>当一个链表的元素个数达到一定的数量且数组的长度达到一定的长度后，则把链表转化为红黑树。</p>
+<h3 id="三源码分析">三、源码分析</h3>
+<p>打开<code>HashMap.java</code> 来瞧一瞧</p>
+<h4 id="类成员">类成员</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HashMap</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractMap<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Map<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;,</span> Cloneable<span style="color:#f92672">,</span> Serializable <span style="color:#f92672">{</span>
+	<span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	默认的初始化容量16,hashMap的容量必须是2的次方数.
+</span><span style="color:#75715e">     *	1&lt;&lt;4=16  这里是0000 0001 左移4位变成0001 0000 转换成十进制等于16 (看不懂的请先看我另外&lt;&lt;java位运算&gt;&gt;这篇文章)
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> DEFAULT_INITIAL_CAPACITY <span style="color:#f92672">=</span> 1 <span style="color:#f92672">&lt;&lt;</span> 4<span style="color:#f92672">;</span> <span style="color:#75715e">// aka 16
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	最大的容量为2的30次方  
+</span><span style="color:#75715e">     *	算了一下是:1073741824
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MAXIMUM_CAPACITY <span style="color:#f92672">=</span> 1 <span style="color:#f92672">&lt;&lt;</span> 30<span style="color:#f92672">;</span>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	默认负载因子
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">float</span> DEFAULT_LOAD_FACTOR <span style="color:#f92672">=</span> 0<span style="color:#f92672">.</span><span style="color:#a6e22e">75f</span><span style="color:#f92672">;</span>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	链表转成红黑树的阈值(条件1)
+</span><span style="color:#75715e">     *	hash碰撞之后,形成链表,当链表长度超过这个值得时候,有可能进行链表到红黑树的转变
+</span><span style="color:#75715e">     *	转换成红黑树必须要满足两个条件
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> TREEIFY_THRESHOLD <span style="color:#f92672">=</span> 8<span style="color:#f92672">;</span>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	红黑树转为链表的阈值。
+</span><span style="color:#75715e">     * 	比如:在删除某些元素之后,扩容时如果发现链表长度(桶中元素个数)小于 6，则会由红黑树重新退化为链表
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> UNTREEIFY_THRESHOLD <span style="color:#f92672">=</span> 6<span style="color:#f92672">;</span>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     *	最小树化容量阈值(条件2)
+</span><span style="color:#75715e">     *	当哈希表中的容量(数组的长度) &gt; 该值时，才允许树形化链表,否则，若桶内元素太多时，则直接扩容，而不是树形化
+</span><span style="color:#75715e">     *	为了避免进行扩容和树形化选择的冲突，这个值不能小于 4 * TREEIFY_THRESHOLD
+</span><span style="color:#75715e">     *	转换成红黑树必须要满足两个条件
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TREEIFY_CAPACITY <span style="color:#f92672">=</span> 64<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Node 是 hashMap 的一个内部类，实现了 Map.Entry 接口，本质是就是一个映射 (键值对)
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> hash<span style="color:#f92672">;</span> <span style="color:#75715e">// 用来定位数组索引位置
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">final</span> K key<span style="color:#f92672">;</span>
+        V value<span style="color:#f92672">;</span>
+        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span> <span style="color:#75715e">// 链表的下一个node
+</span><span style="color:#75715e"></span>
+        Node<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> hash<span style="color:#f92672">,</span> K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> K <span style="color:#a6e22e">getKey</span><span style="color:#f92672">()</span>        <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> V <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span>      <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hashCode</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> V <span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>V newValue<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+		<span style="color:#75715e">/**
+</span><span style="color:#75715e">     * 哈希桶数组，分配的时候，table的长度总是2的次方数
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">transient</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> table<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * HashMap 中实际存储的 key-value 键值对数量
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">int</span> size<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * 用来记录 HashMap 内部结构发生变化的次数，主要用于迭代的快速失败机制
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">int</span> modCount<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * HashMap 扩容阈值，当数量&gt;=threshold时，就会扩容
+</span><span style="color:#75715e">     * 计算方法：容量capacity * 负载因子load factor    
+</span><span style="color:#75715e">     * 比如:默认容量16*0.75=12
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">int</span> threshold<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * HashMap 的负载因子.作用是为了计算扩容阈值
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">float</span> loadFactor<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="构造方法">构造方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 构造方法1:定了具体容量大小和加载因子的构造函数
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HashMap</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> initialCapacity<span style="color:#f92672">,</span> <span style="color:#66d9ef">float</span> loadFactor<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  	<span style="color:#75715e">//校验:传入的初始化容量参数不能&lt;0
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>initialCapacity <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+      <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Illegal initial capacity: &#34;</span> <span style="color:#f92672">+</span>
+                                         initialCapacity<span style="color:#f92672">);</span>
+  	<span style="color:#75715e">//校验:如果传入的初始化容量参数&gt;MAXIMUM_CAPACITY最大容量值,就把最大值赋值给初始化容量
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>initialCapacity <span style="color:#f92672">&gt;</span> MAXIMUM_CAPACITY<span style="color:#f92672">)</span>
+      initialCapacity <span style="color:#f92672">=</span> MAXIMUM_CAPACITY<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//校验:负载因子不能&lt;=0 并且 它不能是个非数值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>loadFactor <span style="color:#f92672">&lt;=</span> 0 <span style="color:#f92672">||</span> Float<span style="color:#f92672">.</span><span style="color:#a6e22e">isNaN</span><span style="color:#f92672">(</span>loadFactor<span style="color:#f92672">))</span>
+      <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Illegal load factor: &#34;</span> <span style="color:#f92672">+</span>
+                                         loadFactor<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">loadFactor</span> <span style="color:#f92672">=</span> loadFactor<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//这个方法下面会讲到
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">threshold</span> <span style="color:#f92672">=</span> tableSizeFor<span style="color:#f92672">(</span>initialCapacity<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 构造方法2:指定了具体容量大小的构造函数
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HashMap</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> initialCapacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  	<span style="color:#75715e">//调用上面那个方法,传入的是默认负载因子
+</span><span style="color:#75715e"></span>  	<span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>initialCapacity<span style="color:#f92672">,</span> DEFAULT_LOAD_FACTOR<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 构造方法3:默认无参构造
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HashMap</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  	<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">loadFactor</span> <span style="color:#f92672">=</span> DEFAULT_LOAD_FACTOR<span style="color:#f92672">;</span> <span style="color:#75715e">// all other fields defaulted
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 构造方法4:指定map
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HashMap</span><span style="color:#f92672">(</span>Map<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> K<span style="color:#f92672">,</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">extends</span> V<span style="color:#f92672">&gt;</span> m<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">loadFactor</span> <span style="color:#f92672">=</span> DEFAULT_LOAD_FACTOR<span style="color:#f92672">;</span>
+    putMapEntries<span style="color:#f92672">(</span>m<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="tablesizefor">tableSizeFor</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * Returns a power of two size for the given target capacity.
+</span><span style="color:#75715e"> * 计算出 &gt;=cap的最小的2的次方数
+</span><span style="color:#75715e"> * 例如:cap=10 ,那么最接近10的2的次方数是16
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tableSizeFor</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> cap<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> cap <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+    n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">;</span>
+    n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 2<span style="color:#f92672">;</span>
+    n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 4<span style="color:#f92672">;</span>
+    n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 8<span style="color:#f92672">;</span>
+    n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;=</span> MAXIMUM_CAPACITY<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> MAXIMUM_CAPACITY <span style="color:#f92672">:</span> n <span style="color:#f92672">+</span> 1<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+
+
+</code></pre></div><p>这里看不懂的请看我的另外一片文章:<a href="https://ko1a.github.io/post/bitoperationblog/">&laquo;Java中位运算&raquo;</a></p>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> 10<span style="color:#f92672">;</span>		<span style="color:#75715e">//10的二进制:0000 0000 0000 0000 0000 0000 0000 1010
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> 10 <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>	<span style="color:#75715e">//9的二进制: 0000 0000 0000 0000 0000 0000 0000 1001
+</span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">;</span> 
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1001&gt;&gt;&gt;1等于0000 0000 0000 0000 0000 0000 0000 0100 
+</span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1001 | 0000 0000 0000 0000 0000 0000 0000 0100
+</span><span style="color:#75715e">//		n=0000 0000 0000 0000 0000 0000 0000 1101
+</span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 2<span style="color:#f92672">;</span>
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1101&gt;&gt;&gt;2等于0000 0000 0000 0000 0000 0000 0000 0011
+</span><span style="color:#75715e">//第二步:0000 0000 0000 0000 0000 0000 0000 1101 | 0000 0000 0000 0000 0000 0000 0000 0011
+</span><span style="color:#75715e">//		n=0000 0000 0000 0000 0000 0000 0000 1111
+</span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 4<span style="color:#f92672">;</span>
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;4等于0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1111 | 0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
+</span><span style="color:#75715e">//右移4位还是1111
+</span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 8<span style="color:#f92672">;</span>
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;4等于0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1111 | 0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
+</span><span style="color:#75715e">//右移8位还是1111
+</span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">;</span>
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;4等于0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1111 | 0000 0000 0000 0000 0000 0000 0000 0000
+</span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
+</span><span style="color:#75715e">//右移16位还是1111
+</span><span style="color:#75715e">//1111转出十进制就是15
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//如果计算出来n&lt;最大容量 n+1
+</span><span style="color:#75715e">//n=15+1
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;=</span> MAXIMUM_CAPACITY<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> MAXIMUM_CAPACITY <span style="color:#f92672">:</span> n <span style="color:#f92672">+</span> 1<span style="color:#f92672">;</span>
+
+
+
+</code></pre></div><p>最后 <code>int n = cap - 1;</code> 这个是为了你传入的cap就是2的次方数.</p>
+<p>例如8 那么算出来的结果就会是16. 那么就翻了一倍&hellip;可以自己尝试一下就明白了</p>
+<h4 id="put方法">put方法</h4>
+<p>待更&hellip;</p>
 
     </div>
     <div class="post-footer">

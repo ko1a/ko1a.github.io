@@ -14,11 +14,10 @@
       
       <guid>https://ko1a.github.io/post/bitoperationblog/</guid>
       <description>写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
-static final int hash(Object key) { int h; return (key == null) ? 0 : (h = key.hashCode()) ^ (h &amp;gt;&amp;gt;&amp;gt; 16); } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
+static final int tableSizeFor(int cap) { int n = cap - 1; n |= n &amp;gt;&amp;gt;&amp;gt; 1; n |= n &amp;gt;&amp;gt;&amp;gt; 2; n |= n &amp;gt;&amp;gt;&amp;gt; 4; n |= n &amp;gt;&amp;gt;&amp;gt; 8; n |= n &amp;gt;&amp;gt;&amp;gt; 16; return (n &amp;lt; 0) ? 1 : (n &amp;gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1; } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
 关于二进制 一切的起源都要从二进制开始&amp;hellip;在了解位之前,有必要先知道二进制的概念
 百度百科:二进制
-Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API
-public static void main(String[] args) { int num = 168; //十进制转二进制  System.out.println(Integer.toBinaryString(num)); //十进制转八进制  System.out.println(Integer.toOctalString(num)); //十进制转十六进制  System.out.println(Integer.toHexString(num)); //二进制转十进制  System.</description>
+Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API</description>
     </item>
     
   </channel>
