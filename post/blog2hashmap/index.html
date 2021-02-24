@@ -95,7 +95,7 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          6 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -254,7 +254,7 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
     <span style="color:#75715e">/**
 </span><span style="color:#75715e">     * HashMap 扩容阈值，当数量&gt;=threshold时，就会扩容
 </span><span style="color:#75715e">     * 计算方法：容量capacity * 负载因子load factor    
-</span><span style="color:#75715e">     * 比如:默认容量16*0.75=12
+</span><span style="color:#75715e">     * 比如:默认容量16*0.75=12,当map中的元素&gt;=12 就会触发扩容
 </span><span style="color:#75715e">     */</span>
     <span style="color:#66d9ef">int</span> threshold<span style="color:#f92672">;</span>
 
@@ -338,12 +338,12 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
 </span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
 </span><span style="color:#75715e">//右移4位还是1111
 </span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 8<span style="color:#f92672">;</span>
-<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;4等于0000 0000 0000 0000 0000 0000 0000 0000
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;8等于0000 0000 0000 0000 0000 0000 0000 0000
 </span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1111 | 0000 0000 0000 0000 0000 0000 0000 0000
 </span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
 </span><span style="color:#75715e">//右移8位还是1111
 </span><span style="color:#75715e"></span>n <span style="color:#f92672">|=</span> n <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">;</span>
-<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;4等于0000 0000 0000 0000 0000 0000 0000 0000
+<span style="color:#75715e">//第一步:0000 0000 0000 0000 0000 0000 0000 1111&gt;&gt;&gt;16等于0000 0000 0000 0000 0000 0000 0000 0000
 </span><span style="color:#75715e">//第二部:0000 0000 0000 0000 0000 0000 0000 1111 | 0000 0000 0000 0000 0000 0000 0000 0000
 </span><span style="color:#75715e">//n=0000 0000 0000 0000 0000 0000 0000 1111
 </span><span style="color:#75715e">//右移16位还是1111
@@ -358,7 +358,144 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
 </code></pre></div><p>最后 <code>int n = cap - 1;</code> 这个是为了你传入的cap就是2的次方数.</p>
 <p>例如8 那么算出来的结果就会是16. 那么就翻了一倍&hellip;可以自己尝试一下就明白了</p>
 <h4 id="put方法">put方法</h4>
-<p>待更&hellip;</p>
+<p>虽然插入的入口是put, 但是核心逻辑在putVal 里面</p>
+<p>源码↓↓↓</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> putVal<span style="color:#f92672">(</span>hash<span style="color:#f92672">(</span>key<span style="color:#f92672">),</span> key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 扰动函数:更新新数据的key 先 hashCode 在将hash值进行右移16位后 再与原hash值 进行异或操作 
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hash</span><span style="color:#f92672">(</span>Object key<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> h<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>key <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 0 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">())</span> <span style="color:#f92672">^</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * int hash key计算出来的hash值
+</span><span style="color:#75715e"> * K key 
+</span><span style="color:#75715e"> * V value
+</span><span style="color:#75715e"> * boolean onlyIfAbsent 是否覆盖
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">final</span> V <span style="color:#a6e22e">putVal</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> hash<span style="color:#f92672">,</span> K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> onlyIfAbsent<span style="color:#f92672">,</span>
+                   <span style="color:#66d9ef">boolean</span> evict<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+  			<span style="color:#75715e">//临时变量 
+</span><span style="color:#75715e"></span>  			<span style="color:#75715e">//tab 当前散列表
+</span><span style="color:#75715e"></span>  			<span style="color:#75715e">//p	待插入位置的元素
+</span><span style="color:#75715e"></span>  			<span style="color:#75715e">//n hash 数组的长度
+</span><span style="color:#75715e"></span>  			<span style="color:#75715e">//i 插入元素在数组中的下标位置
+</span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">;</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">,</span> i<span style="color:#f92672">;</span>
+  			<span style="color:#75715e">//先赋值,然后判断hashMap是否是空,如果是,调用resize()方法扩容.懒加载机制
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>tab <span style="color:#f92672">=</span> table<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+            n <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>tab <span style="color:#f92672">=</span> resize<span style="color:#f92672">()).</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+  
+        <span style="color:#75715e">/**
+</span><span style="color:#75715e">        * ①:i = (n - 1) &amp; hash 计算出新数据插入位置的下标,赋值给i
+</span><span style="color:#75715e">        * ②:将i的位置的数据,赋值给p
+</span><span style="color:#75715e">        *	③:判断p是否为null,如果是null ,则直接插入
+</span><span style="color:#75715e">        */</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p <span style="color:#f92672">=</span> tab<span style="color:#f92672">[</span>i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> hash<span style="color:#f92672">])</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+            tab<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> newNode<span style="color:#f92672">(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+  			<span style="color:#75715e">//否则p不为null的情况
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+          	<span style="color:#75715e">//先定义临时变量,e,k
+</span><span style="color:#75715e"></span>            Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e<span style="color:#f92672">;</span> K k<span style="color:#f92672">;</span>
+          	<span style="color:#75715e">//判断p的hash是否是新数据的hash 并且 key是否相等,如果是,就把p赋值给e
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> hash <span style="color:#f92672">&amp;&amp;</span>
+                <span style="color:#f92672">((</span>k <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>key <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>k<span style="color:#f92672">))))</span>
+                e <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+          	<span style="color:#75715e">//判断p是否是红黑树,如果是,就走插入红黑树的逻辑
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#66d9ef">instanceof</span> TreeNode<span style="color:#f92672">)</span>
+                e <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;)</span>p<span style="color:#f92672">).</span><span style="color:#a6e22e">putTreeVal</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> tab<span style="color:#f92672">,</span> hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span> value<span style="color:#f92672">);</span>
+          	<span style="color:#75715e">//否则,p不等于要插入的新元素,就开始拉链插入
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+              <span style="color:#75715e">//循环
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> binCount <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> <span style="color:#f92672">;</span> <span style="color:#f92672">++</span>binCount<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                  <span style="color:#75715e">//将p.next节点赋值给e,并判断是否为空,是直接插入,
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>e <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> newNode<span style="color:#f92672">(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+                      <span style="color:#75715e">//判断链表的长度&gt;树化的阈值,就有可能树化转红黑树,treeifyBin方法里面会判断数组长度是否&gt;=64,
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>binCount <span style="color:#f92672">&gt;=</span> TREEIFY_THRESHOLD <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#75715e">// -1 for 1st
+</span><span style="color:#75715e"></span>                            treeifyBin<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> hash<span style="color:#f92672">);</span>
+                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                  <span style="color:#75715e">//如果e跟新元素是一样就直接break
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> hash <span style="color:#f92672">&amp;&amp;</span>
+                        <span style="color:#f92672">((</span>k <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>key <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>k<span style="color:#f92672">))))</span>
+                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                    p <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+          <span style="color:#75715e">//e不等于null,就替换操作,返回老数据
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// existing mapping for key
+</span><span style="color:#75715e"></span>                V oldValue <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">value</span><span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>onlyIfAbsent <span style="color:#f92672">||</span> oldValue <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    e<span style="color:#f92672">.</span><span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
+                afterNodeAccess<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">return</span> oldValue<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+  			<span style="color:#75715e">// 更新内部结构发生变化的次数
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">++</span>modCount<span style="color:#f92672">;</span>
+  			<span style="color:#75715e">// 判断 自增后的桶的大小&gt;扩容阈值,则扩容
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(++</span>size <span style="color:#f92672">&gt;</span> threshold<span style="color:#f92672">)</span>
+            resize<span style="color:#f92672">();</span>
+        afterNodeInsertion<span style="color:#f92672">(</span>evict<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p><strong>插入逻辑分析:</strong></p>
+<ol>
+<li><strong>先判断hashMap是否为null,是的话,就进行初始化操作(懒加载)</strong></li>
+<li><strong>计算插入位置的下标,判断为null,如果是null就直接插入</strong></li>
+<li><strong>判断插入位置的引用是否是红黑树,如果是就走红黑树插入逻辑</strong></li>
+<li><strong>循环链表,判断链表长度是否达到树化阈值,若果达到,继续判断数组长度是否大于64,两个判断同时成立,转换成红黑树,否则继续扩容,判断插入数据是否相等则替换,否则将其插入尾部(jdk7是采用头插法)</strong></li>
+<li><strong>更新内部结构发生变化的次数和判断是否扩容.</strong></li>
+</ol>
+<p>几个细节分析:</p>
+<p>① 在计算hash,这里为什么要先后移16位,再进行异或操作?</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">())</span> <span style="color:#f92672">^</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">)</span>
+</code></pre></div><p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">h<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span> <span style="color:#f92672">=</span>    1010 0100 1101 1110 0101 1011 1011 0001
+h<span style="color:#f92672">=</span>              1010 0101 1101 1110 0101 1011 1011 0001
+h<span style="color:#f92672">&gt;&gt;&gt;</span>16 <span style="color:#f92672">=</span>        0000 0000 0000 0000 0010 0100 1101 1110
+h <span style="color:#f92672">^</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">&gt;&gt;&gt;</span> 16<span style="color:#f92672">)=</span> 1010 0101 1101 1110 0111 1111 0110 1111
+<span style="color:#75715e">//假设这里不右移
+</span><span style="color:#75715e"></span>h<span style="color:#f92672">=</span>              1010 0101 1101 1110 0101 1011 1011 0001
+h<span style="color:#f92672">^</span>h<span style="color:#f92672">=</span>            0000 0000 0000 0000 0010 0100 1101 1110
+<span style="color:#75715e">//所以可以看出有什么区别吧...
+</span><span style="color:#75715e"></span>
+</code></pre></div><p><strong>右移16位.再进行了异或操作后,是为了让高位和低位同时参与hash计算,增加hash的复杂度.其目的就是可以提高hash的散列性,从而减少hash碰撞.</strong></p>
+<p>②计算下标</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> hash
+</code></pre></div><p>这行代码效果就是根据hash值算出来一个数组下标</p>
+<p>举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//假设hash = 阿强
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> hash <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;阿强&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">();</span>
+<span style="color:#75715e">//假设数组的长度是16
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> 16<span style="color:#f92672">;</span>
+n <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span><span style="color:#75715e">//n-1是因为数组下标从0开始
+</span><span style="color:#75715e">// hash 转换成二进制:100101001000011011011
+</span><span style="color:#75715e">// n    转换成二进制:000000000000000001111
+</span><span style="color:#75715e">//进行 &amp; 操作之后结果:000000000000000001011 转换成十进制为:11
+</span></code></pre></div><p><strong>因为n的高位都是0 ,&amp;操作之后,低位就和hash的低位是一样的,实际的取值范围就是低四位的取值范围.所以就是0000到1111.</strong></p>
+<p><strong>可以看出其实这里就是一个取模的操作,如果数组的length不是2的次方数,用位运算计算的话,会出现不一样的结果,但是位运算效率比取模高.</strong></p>
+<p>再举个栗子:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> hash <span style="color:#f92672">=</span> 17<span style="color:#f92672">;</span>
+<span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> 15<span style="color:#f92672">;</span>
+n <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+<span style="color:#75715e">// hash 转换成二进制:10001
+</span><span style="color:#75715e">// n    转换成二进制:01110
+</span><span style="color:#75715e">// &amp;    结果:       00000
+</span><span style="color:#75715e">//用十进制取余 17%15=2;
+</span><span style="color:#75715e">//但是用 位运算 的结果=0
+</span></code></pre></div><p><strong>所以,如果是用位运算计算,HashMap的容量一定要是2的次方数</strong></p>
+<h4 id="resize-扩容方法">resize 扩容方法</h4>
+<p>扩容条件:</p>
+<ol>
+<li>当表为null,初始化扩容</li>
+<li>链表长度&gt;=8</li>
+<li>hashMap的元素个数 * loadFactor 负载因子(默认0.75) &gt;=threshold 扩容阈值 发生扩容.例:16*0.75=12. 当map中的元素&gt;=12会扩容</li>
+</ol>
+<p>待更新&hellip;.</p>
 
     </div>
     <div class="post-footer">
