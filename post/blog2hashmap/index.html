@@ -95,7 +95,7 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          6 min read
+          8 min read
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
@@ -446,7 +446,7 @@ HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（�
 <ol>
 <li><strong>先判断hashMap是否为null,是的话,就进行初始化操作(懒加载)</strong></li>
 <li><strong>计算插入位置的下标,判断为null,如果是null就直接插入</strong></li>
-<li><strong>判断插入位置的引用是否是红黑树,如果是就走红黑树插入逻辑</strong></li>
+<li><strong>判断插入位置的引用是否是红黑树,如果是就走红黑树插入逻辑,否则就是链表</strong></li>
 <li><strong>循环链表,判断链表长度是否达到树化阈值,若果达到,继续判断数组长度是否大于64,两个判断同时成立,转换成红黑树,否则继续扩容,判断插入数据是否相等则替换,否则将其插入尾部(jdk7是采用头插法)</strong></li>
 <li><strong>更新内部结构发生变化的次数和判断是否扩容.</strong></li>
 </ol>
@@ -489,13 +489,160 @@ n <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> 1<
 </span><span style="color:#75715e">//但是用 位运算 的结果=0
 </span></code></pre></div><p><strong>所以,如果是用位运算计算,HashMap的容量一定要是2的次方数</strong></p>
 <h4 id="resize-扩容方法">resize 扩容方法</h4>
+<p>扩容就是重新计算容量，向HashMap对象里不停的添加元素，而HashMap对象内部的数组无法装载更多的元素时，对象就需要扩大数组的长度，以便能装入更多的元素。</p>
 <p>扩容条件:</p>
 <ol>
 <li>当表为null,初始化扩容</li>
 <li>链表长度&gt;=8</li>
 <li>hashMap的元素个数 * loadFactor 负载因子(默认0.75) &gt;=threshold 扩容阈值 发生扩容.例:16*0.75=12. 当map中的元素&gt;=12会扩容</li>
 </ol>
-<p>待更新&hellip;.</p>
+<p>上源码&hellip;↓↓↓</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> <span style="color:#a6e22e">resize</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  	<span style="color:#75715e">//定义个变量oldTab,把当前的tab赋值给它
+</span><span style="color:#75715e"></span>    HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> oldTab <span style="color:#f92672">=</span> table<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//定义变量:oldCap ,老tab的容量
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> oldCap <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>oldTab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 0 <span style="color:#f92672">:</span> oldTab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//老tab的扩容阈值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> oldThr <span style="color:#f92672">=</span> threshold<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//新tab的容量,新tab的扩容阈值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> newCap<span style="color:#f92672">,</span> newThr <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//判断老的tab容量&gt;0,代表这是一次正常的扩容
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>oldCap <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#75715e">//判断老tab的最大容量大于等于tab的最大容量,不扩容
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>oldCap <span style="color:#f92672">&gt;=</span> MAXIMUM_CAPACITY<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            threshold <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">MAX_VALUE</span><span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">return</span> oldTab<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+      <span style="color:#75715e">//先将老tab的容量*2赋值给newCap 新tab容量
+</span><span style="color:#75715e"></span>      <span style="color:#75715e">//判断 老tab的容量*2 &lt; 最大容量 并且 老容量 &gt;=初始容量,成立:新的扩容阈值=老阈值*2
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>newCap <span style="color:#f92672">=</span> oldCap <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> MAXIMUM_CAPACITY <span style="color:#f92672">&amp;&amp;</span>
+                oldCap <span style="color:#f92672">&gt;=</span> DEFAULT_INITIAL_CAPACITY<span style="color:#f92672">)</span>
+            newThr <span style="color:#f92672">=</span> oldThr <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">;</span> <span style="color:#75715e">// double threshold
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+  	<span style="color:#75715e">//否则老容量==0 ,初始化动作
+</span><span style="color:#75715e"></span>  	<span style="color:#75715e">//并且 老扩容阈值&gt;0 ,那么新的容量=老的阈值
+</span><span style="color:#75715e"></span>  	<span style="color:#75715e">//这种情况应该是通过 new HashMap(n) 
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>oldThr <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#75715e">// initial capacity was placed in threshold
+</span><span style="color:#75715e"></span>        newCap <span style="color:#f92672">=</span> oldThr<span style="color:#f92672">;</span>
+  	<span style="color:#75715e">//都不成立的情况下,也是初始化操作进来的,通过new HashMap();无参构造方法调用,默认为初始值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>               <span style="color:#75715e">// zero initial threshold signifies using defaults
+</span><span style="color:#75715e"></span>        newCap <span style="color:#f92672">=</span> DEFAULT_INITIAL_CAPACITY<span style="color:#f92672">;</span>
+        newThr <span style="color:#f92672">=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">)(</span>DEFAULT_LOAD_FACTOR <span style="color:#f92672">*</span> DEFAULT_INITIAL_CAPACITY<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+  	<span style="color:#75715e">//如果新的扩容阈值=0,就给他计算一个扩容阈值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>newThr <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">float</span> ft <span style="color:#f92672">=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">float</span><span style="color:#f92672">)</span>newCap <span style="color:#f92672">*</span> loadFactor<span style="color:#f92672">;</span>
+        newThr <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>newCap <span style="color:#f92672">&lt;</span> MAXIMUM_CAPACITY <span style="color:#f92672">&amp;&amp;</span> ft <span style="color:#f92672">&lt;</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">float</span><span style="color:#f92672">)</span>MAXIMUM_CAPACITY <span style="color:#f92672">?</span>
+                <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">)</span>ft <span style="color:#f92672">:</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">MAX_VALUE</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+  <span style="color:#75715e">//新的扩容阈值,赋值给当前扩容阈值
+</span><span style="color:#75715e"></span>    threshold <span style="color:#f92672">=</span> newThr<span style="color:#f92672">;</span>
+    <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">({</span><span style="color:#e6db74">&#34;rawtypes&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">})</span>
+  <span style="color:#75715e">//创建一个新的数组.长度是老的2倍
+</span><span style="color:#75715e"></span>    HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> newTab <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[])</span><span style="color:#66d9ef">new</span> HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">[</span>newCap<span style="color:#f92672">];</span>
+  <span style="color:#75715e">//新创建的tab赋值给当前tab
+</span><span style="color:#75715e"></span>    table <span style="color:#f92672">=</span> newTab<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>oldTab <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      <span style="color:#75715e">//遍历老tab,把老的tab的数据赋值到新的tab
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> j <span style="color:#f92672">&lt;</span> oldCap<span style="color:#f92672">;</span> <span style="color:#f92672">++</span>j<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+          <span style="color:#75715e">//定义一个临时数据节点 e
+</span><span style="color:#75715e"></span>            HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e<span style="color:#f92672">;</span>
+          <span style="color:#75715e">//判断桶中的第一个元素不为null,并赋值给e
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>e <span style="color:#f92672">=</span> oldTab<span style="color:#f92672">[</span>j<span style="color:#f92672">])</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+              <span style="color:#75715e">//将老的数据变成null,估计这样做的好处就是方便gc回收吧
+</span><span style="color:#75715e"></span>                oldTab<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+              <span style="color:#75715e">//如果第一个元素的下一个节点==null,那么它就不是一个链表.直接赋值给新tab
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    newTab<span style="color:#f92672">[</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">&amp;</span> <span style="color:#f92672">(</span>newCap <span style="color:#f92672">-</span> 1<span style="color:#f92672">)]</span> <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+              <span style="color:#75715e">//如果是红黑树,就走红黑树的逻辑
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#66d9ef">instanceof</span> HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">TreeNode</span><span style="color:#f92672">)</span>
+                    <span style="color:#f92672">((</span>HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">TreeNode</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;)</span>e<span style="color:#f92672">).</span><span style="color:#a6e22e">split</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> newTab<span style="color:#f92672">,</span> j<span style="color:#f92672">,</span> oldCap<span style="color:#f92672">);</span>
+              <span style="color:#75715e">//否则就是一个链表
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// preserve order
+</span><span style="color:#75715e"></span>                  <span style="color:#75715e">//低位链表
+</span><span style="color:#75715e"></span>                    HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> loHead <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> loTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                  <span style="color:#75715e">//高位链表
+</span><span style="color:#75715e"></span>                    HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> hiHead <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> hiTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                  <span style="color:#75715e">//下个节点
+</span><span style="color:#75715e"></span>                    HashMap<span style="color:#f92672">.</span><span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
+                  <span style="color:#75715e">//循环老的链表,可能将其拆分成两个链表
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">do</span> <span style="color:#f92672">{</span>
+                        next <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
+                      <span style="color:#75715e">//通过 hash &amp; 老tab容量的 ==0 就把它放到低位链表里
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">&amp;</span> oldCap<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>loTail <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                                loHead <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                            <span style="color:#66d9ef">else</span>
+                                loTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                            loTail <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                        <span style="color:#f92672">}</span>
+                      <span style="color:#75715e">//否则放到高位列表
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>hiTail <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                                hiHead <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                            <span style="color:#66d9ef">else</span>
+                                hiTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                            hiTail <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
+                        <span style="color:#f92672">}</span>
+                    <span style="color:#f92672">}</span> <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>e <span style="color:#f92672">=</span> next<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+                  	<span style="color:#75715e">//前面只是进行组装数据,这里才是真正的赋值
+</span><span style="color:#75715e"></span>                  	<span style="color:#75715e">//首先是低位链表赋值,放到原来的位置
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>loTail <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        loTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                        newTab<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> loHead<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                  <span style="color:#75715e">//高位链表的下标 = 原来的下标位置+老tab的长度 
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>hiTail <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        hiTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                        newTab<span style="color:#f92672">[</span>j <span style="color:#f92672">+</span> oldCap<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> hiHead<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> newTab<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>扩容逻辑分析:</p>
+<ol>
+<li>判断是扩容还是初始化</li>
+<li>计算出新的tab的容量和扩容阈值</li>
+<li>扩容分三种情况:
+<ul>
+<li>1:无hash碰撞,将数据赋值到新的桶中</li>
+<li>2:如果是红黑树,则拆分红黑树</li>
+<li>3:如果是个链表,遍历链表节点按原顺序分组</li>
+</ul>
+</li>
+</ol>
+<p>具体分组逻辑:</p>
+<p>原链表分化成两个链表，低位链表存储在原来桶的位置，高位链表搬移到原来桶的位置加老容量的位置</p>
+<p>核心逻辑就是这两行代码:</p>
+<p>判断存储位置. 高或低</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">if</span><span style="color:#f92672">((</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">&amp;</span> oldCap<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</code></pre></div><p>计算高位置下标</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">newTab<span style="color:#f92672">[</span>j <span style="color:#f92672">+</span> oldCap<span style="color:#f92672">]</span>
+</code></pre></div><p>举个栗子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//假设数组的长度16 ,两个hash值
+</span><span style="color:#75715e"></span>n<span style="color:#f92672">=</span>n<span style="color:#f92672">-</span>1 <span style="color:#75715e">//二进制:0000 0000 0000 0000 0000 0000 1111
+</span><span style="color:#75715e"></span>hash1 <span style="color:#75715e">//     :1101 1001 0100 1000 0110 1001 1011
+</span><span style="color:#75715e"></span>hash2 <span style="color:#75715e">//     :1101 1001 0100 1000 0110 1000 1011
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span>
+结果1:        <span style="color:#f92672">:</span>0000 0000 0000 0000 0000 0000 1011 <span style="color:#75715e">// 十进制:11
+</span><span style="color:#75715e"></span>结果2:        <span style="color:#f92672">:</span>0000 0000 0000 0000 0000 0000 1011 <span style="color:#75715e">// 十进制:11
+</span><span style="color:#75715e">//扩容后:长度32  
+</span><span style="color:#75715e"></span>n<span style="color:#f92672">=</span>n<span style="color:#f92672">-</span>1 <span style="color:#75715e">//二进制:0000 0000 0000 0000 0000 0001 1111
+</span><span style="color:#75715e"></span>hash1 <span style="color:#75715e">//     :1101 1001 0100 1000 0110 1001 1011
+</span><span style="color:#75715e"></span>hash2 <span style="color:#75715e">//     :1101 1001 0100 1000 0110 1000 1011
+</span><span style="color:#75715e"></span><span style="color:#f92672">&amp;</span>
+结果1:        <span style="color:#f92672">:</span>0000 0000 0000 0000 0000 0001 1011 <span style="color:#75715e">// 十进制:27
+</span><span style="color:#75715e"></span>结果2:        <span style="color:#f92672">:</span>0000 0000 0000 0000 0000 0000 1011 <span style="color:#75715e">// 十进制:11
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//扩容后，hash1的下标是27,hash2的下标还是同样的位置11. ,分组的时候,hash1的位置从11变成了27的高位链表中,而hash2的位置不变.
+</span><span style="color:#75715e">//还是在低位链表
+</span><span style="color:#75715e">//27=11+16 
+</span><span style="color:#75715e">//高位置下标=低位至下标+扩容之前的length...
+</span></code></pre></div><p><strong>所以:扩容之后,取模运算的位数由4位变为了5位,只要判断第5位是0就低位链表,否则就在高位链表;高位链表的下标位置规则=老数组下标+老数组的长度</strong></p>
+<p><strong>备注:jdk8之前,是重新计算hash的方式进行分组,这是jdk8之后的优化</strong></p>
 
     </div>
     <div class="post-footer">
