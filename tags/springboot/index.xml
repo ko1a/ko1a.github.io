@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>springboot on 阿强的blog</title>
+    <link>https://ko1a.github.io/tags/springboot/</link>
+    <description>Recent content in springboot on 阿强的blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 19 Dec 2020 13:21:20 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/springboot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>spring boot 核心的注解</title>
+      <link>https://ko1a.github.io/post/sb_annotations/</link>
+      <pubDate>Sat, 19 Dec 2020 13:21:20 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/sb_annotations/</guid>
+      <description>前言 在我们利用spring boot日常开发中,包括spring boot源码里.经常会出现一些很常见的注解.所以就想着花点时间总结一下&amp;hellip;
+@Configuration 它一般用来声明一个配置类,用来代替 xml 配置文件
+@Configuration(proxyBeanMethods = false) public class MyConfig { // 将MyBean 注册到spring 容器中, 方法名就是 beanNname  @Bean public MyBean myBean() { return new MyBean(); } } 同等于
+&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;beans xmlns=&amp;#34;http://www.springframework.org/schema/beans&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34; http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd&amp;#34;&amp;gt; &amp;lt;bean id=&amp;#34;MyBean&amp;#34; class=&amp;#34;com.bean.MyBean&amp;#34;&amp;gt; &amp;lt;property name=&amp;#34;name&amp;#34; value=&amp;#34;阿强&amp;#34;/&amp;gt; &amp;lt;/bean&amp;gt; &amp;lt;/beans&amp;gt; 看一下@Configuration的内部实现
+@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface Configuration { ... } 可以看到,它里面也用到了@Component 注解,意味着他也是个组件,将注册到spring 容器中
+@Configuration 注解在spring boot 2.0 之后新加了一个属性:proxyBeanMethods是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能</description>
+    </item>
+    
+  </channel>
+</rss>

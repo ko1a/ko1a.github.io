@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>spring boot 核心的注解 // 阿强的blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.80.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="wangqiang" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://ko1a.github.io/css/main.min.4c1a909e6fe10d8fe1d9033af603c9b9a7803efa8046860032882a48f84a40f1.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="spring boot 核心的注解"/>
+<meta name="twitter:description" content="前言 在我们利用spring boot日常开发中,包括spring boot源码里.经常会出现一些很常见的注解.所以就想着花点时间总结一下&hellip;
+@Configuration 它一般用来声明一个配置类,用来代替 xml 配置文件
+@Configuration(proxyBeanMethods = false) public class MyConfig { // 将MyBean 注册到spring 容器中, 方法名就是 beanNname  @Bean public MyBean myBean() { return new MyBean(); } } 同等于
+&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt; &lt;beans xmlns=&#34;http://www.springframework.org/schema/beans&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xsi:schemaLocation=&#34; http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd&#34;&gt; &lt;bean id=&#34;MyBean&#34; class=&#34;com.bean.MyBean&#34;&gt; &lt;property name=&#34;name&#34; value=&#34;阿强&#34;/&gt; &lt;/bean&gt; &lt;/beans&gt; 看一下@Configuration的内部实现
+@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface Configuration { ... } 可以看到,它里面也用到了@Component 注解,意味着他也是个组件,将注册到spring 容器中
+@Configuration 注解在spring boot 2.0 之后新加了一个属性:proxyBeanMethods是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能"/>
+
+    <meta property="og:title" content="spring boot 核心的注解" />
+<meta property="og:description" content="前言 在我们利用spring boot日常开发中,包括spring boot源码里.经常会出现一些很常见的注解.所以就想着花点时间总结一下&hellip;
+@Configuration 它一般用来声明一个配置类,用来代替 xml 配置文件
+@Configuration(proxyBeanMethods = false) public class MyConfig { // 将MyBean 注册到spring 容器中, 方法名就是 beanNname  @Bean public MyBean myBean() { return new MyBean(); } } 同等于
+&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt; &lt;beans xmlns=&#34;http://www.springframework.org/schema/beans&#34; xmlns:xsi=&#34;http://www.w3.org/2001/XMLSchema-instance&#34; xsi:schemaLocation=&#34; http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd&#34;&gt; &lt;bean id=&#34;MyBean&#34; class=&#34;com.bean.MyBean&#34;&gt; &lt;property name=&#34;name&#34; value=&#34;阿强&#34;/&gt; &lt;/bean&gt; &lt;/beans&gt; 看一下@Configuration的内部实现
+@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface Configuration { ... } 可以看到,它里面也用到了@Component 注解,意味着他也是个组件,将注册到spring 容器中
+@Configuration 注解在spring boot 2.0 之后新加了一个属性:proxyBeanMethods是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ko1a.github.io/post/sb_annotations/" />
+<meta property="article:published_time" content="2020-12-19T13:21:20+08:00" />
+<meta property="article:modified_time" content="2020-12-19T13:21:20+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://ko1a.github.io/"><img class="app-header-avatar" src="https://pic4.zhimg.com/80/v2-2f47aaadf2eef73c77a4497a67181854_1440w.jpg?source=1940ef5c" alt="wangqiang" /></a>
+      <h1>阿强的blog</h1>
+      <p>go for it</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">spring boot 核心的注解</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 19, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://ko1a.github.io/tags/java/">java</a>
+              <a class="tag" href="https://ko1a.github.io/tags/spring/">spring</a>
+              <a class="tag" href="https://ko1a.github.io/tags/springboot/">springboot</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="前言">前言</h2>
+<p>在我们利用spring boot日常开发中,包括spring boot源码里.经常会出现一些很常见的注解.所以就想着花点时间总结一下&hellip;</p>
+<h3 id="configuration">@Configuration</h3>
+<p><strong>它一般用来声明一个配置类,用来代替 xml 配置文件</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+  
+  	<span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>同等于</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+       <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;
+</span><span style="color:#e6db74">       http://www.springframework.org/schema/beans
+</span><span style="color:#e6db74">       https://www.springframework.org/schema/beans/spring-beans.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+
+    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;MyBean&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.bean.MyBean&#34;</span><span style="color:#f92672">&gt;</span>
+        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;name&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;阿强&#34;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;/bean&gt;</span>
+<span style="color:#f92672">&lt;/beans&gt;</span>
+</code></pre></div><p>看一下<code>@Configuration</code>的内部实现</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Target</span><span style="color:#f92672">(</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@Documented</span>
+<span style="color:#a6e22e">@Component</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Configuration <span style="color:#f92672">{</span> <span style="color:#f92672">...</span> <span style="color:#f92672">}</span>
+</code></pre></div><p>可以看到,它里面也用到了<code>@Component</code> 注解,意味着他也是个组件,将注册到spring 容器中</p>
+<p><code>@Configuration</code> 注解在spring boot 2.0 之后新加了一个属性:<code>proxyBeanMethods</code>是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能</p>
+<h3 id="import">@Import</h3>
+<p><strong>作用通过@Import注解把类添加到IOC容器里面去</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@import</span><span style="color:#f92672">(</span>MyBean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span><span style="color:#75715e">//和下面@Bean 注解是一样的效果
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+  
+  	<span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>在我们自定义starter的时候,可以通过Import 导入其他配置类</p>
+<h3 id="conditional">@Conditional</h3>
+<p><strong>条件装配：条件注解，用于指定当前组件只有在满足条件是才会创建实例注入容器。</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Target</span><span style="color:#f92672">({</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">,</span> ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">METHOD</span><span style="color:#f92672">})</span>
+<span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@Documented</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Conditional <span style="color:#f92672">{</span>
+    Class<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> Condition<span style="color:#f92672">&gt;[]</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p><img src="/images/image-20210302163048674.png" alt="image-20210302163048674"></p>
+<p>可以看到，@Conditional的继承树十分庞大，定义了各式各样的场景。</p>
+<p>以@ConditionalOnBean为例，它用于指定当容器中存在哪些bean时，注解的组件生效：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean1</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+		
+  	<span style="color:#75715e">// 当MyBean 这个类,在IOC容器中存在,才将Student 注册到IOC
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@ConditionalOnBean</span><span style="color:#f92672">(</span>MyBean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">Stu</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;小强同学&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p><strong>注意:@ConditionalOnBean会受到定义顺序的影响，如果被依赖的bean没有被先定义，则@ConditionalOnBean会认为没有</strong></p>
+<h3 id="importresource">@ImportResource</h3>
+<p>这个注解可用于<strong>任何一个配置类</strong>上（当然也包括<strong>主程序类</strong>），它用于将xml文件配置进行导入，一般用于老项目与新项目的融合</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+       <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;
+</span><span style="color:#e6db74">       http://www.springframework.org/schema/beans
+</span><span style="color:#e6db74">       https://www.springframework.org/schema/beans/spring-beans.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+
+    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;MyBean&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.bean.MyBean&#34;</span><span style="color:#f92672">&gt;</span>
+        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;name&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;阿强&#34;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;/bean&gt;</span>
+<span style="color:#f92672">&lt;/beans&gt;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ImportResource</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;classpath:spring.xml&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="configurationproperties">@ConfigurationProperties</h3>
+<p><strong>该注解用于从配置文件中获取值，需要注意的是，他所标注的实体类bean，必须已经在容器中</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">connection.username=admin
+connection.password=123456
+connection.ipAddress=192.168.1.1
+</code></pre></div><h4 id="方式一componentconfigurationproperties">方式一:@Component+@ConfigurationProperties</h4>
+<p>定义一个实体类在装载配置文件信息.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span>
+<span style="color:#a6e22e">@ConfigurationProperties</span><span style="color:#f92672">(</span>prefix<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;connection&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConnectionConfig</span> <span style="color:#f92672">{</span>
+   <span style="color:#66d9ef">private</span> String username<span style="color:#f92672">;</span>
+   <span style="color:#66d9ef">private</span> String password<span style="color:#f92672">;</span>
+   <span style="color:#66d9ef">private</span> String ipAddress<span style="color:#f92672">;</span>
+  <span style="color:#75715e">//get set 方法
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><h4 id="方式二beanconfigurationproperties">方式二:@Bean+@ConfigurationProperties</h4>
+<p>我们还可以把@ConfigurationProperties还可以直接定义在@bean的注解上，这是bean实体类就不用@Component和@ConfigurationProperties了</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#a6e22e">@ConfigurationProperties</span><span style="color:#f92672">(</span>prefix <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;connection&#34;</span><span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">public</span> ConnectionConfig <span style="color:#a6e22e">connectionConfig</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> ConnectionConfig<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="方式三enableconfigurationproperties--configurationproperties">方式三:@EnableConfigurationProperties + @ConfigurationProperties</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@EnableConfigurationProperties</span><span style="color:#f92672">(</span>ConnectionConfig<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
+<span style="color:#f92672">...</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ConfigurationProperties</span><span style="color:#f92672">(</span>prefix<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;connection&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConnectionConfig</span> <span style="color:#f92672">{</span>
+   <span style="color:#66d9ef">private</span> String username<span style="color:#f92672">;</span>
+   <span style="color:#66d9ef">private</span> String password<span style="color:#f92672">;</span>
+   <span style="color:#66d9ef">private</span> String ipAddress<span style="color:#f92672">;</span>
+  <span style="color:#75715e">//get set 方法
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

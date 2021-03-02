@@ -3,32 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ko1a.github.io/tags/java/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/post/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/tags/spring/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/post/sb_annotations/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/tags/springboot/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/tags/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/</loc>
+    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ko1a.github.io/tags/hashmap/</loc>
     <lastmod>2020-06-19T13:20:17+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://ko1a.github.io/tags/java/</loc>
-    <lastmod>2020-06-19T13:20:17+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ko1a.github.io/post/</loc>
-    <lastmod>2020-06-19T13:20:17+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ko1a.github.io/tags/</loc>
-    <lastmod>2020-06-19T13:20:17+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://ko1a.github.io/post/blog2hashmap/</loc>
-    <lastmod>2020-06-19T13:20:17+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ko1a.github.io/</loc>
     <lastmod>2020-06-19T13:20:17+08:00</lastmod>
   </url>
   
