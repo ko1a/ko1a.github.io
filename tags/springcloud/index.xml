@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>springcloud on 阿强的blog</title>
+    <link>https://ko1a.github.io/tags/springcloud/</link>
+    <description>Recent content in springcloud on 阿强的blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 30 Dec 2020 13:21:20 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/springcloud/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>服务注册中心：eureka、zookeeper、consul</title>
+      <link>https://ko1a.github.io/post/210312/</link>
+      <pubDate>Wed, 30 Dec 2020 13:21:20 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/210312/</guid>
+      <description>前言 在传统的RPC远程调用框架中，管理服务与服务之间依赖关系比较复杂，所以需要使用服务治理，管理服务于服务之间依赖关系，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。
+Eureka 简介 Spring Cloud Eureka是Spring Cloud Netflix 子项目的核心组件之一，主要用于微服务架构中的服务治理
+Eureka Server提供服务注册服务
+各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观看到。
+EurekaClient通过注册中心进行访问
+它是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询(round-robin)负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳(默认周期为30秒)。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer将会从服务注册表中把这个服务节点移除（默认90秒)
+部署Eureka server POM 文件 导入依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.cloud&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-cloud-starter-netflix-eureka-server&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; 启动类 @EnableEurekaServer
+@SpringBootApplication @EnableEurekaServer public class EurekaApplication { public static void main(String[] args) { SpringApplication.run(EurekaApplication.class, args); } } application.yml 配置
+server: port: 7001 eureka: instance: hostname: eureka7001 #eureka 实例名称 client: register-with-eureka: false fetch-registry: false service-url: defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ 玩了之后启动服务，在浏览器输入本机IP+端口号即可访问
+部署Eureka Client 上面我们已经完成了，eureka服务端的部署，现在我们来部署一个客户端。并将它注册到服务端
+POM文件引入依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
+    </item>
+    
+  </channel>
+</rss>

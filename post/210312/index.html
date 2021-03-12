@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>服务注册中心：eureka、zookeeper、consul // 阿强的blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.80.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="wangqiang" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://ko1a.github.io/css/main.min.4c1a909e6fe10d8fe1d9033af603c9b9a7803efa8046860032882a48f84a40f1.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="服务注册中心：eureka、zookeeper、consul"/>
+<meta name="twitter:description" content="前言 在传统的RPC远程调用框架中，管理服务与服务之间依赖关系比较复杂，所以需要使用服务治理，管理服务于服务之间依赖关系，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。
+Eureka 简介 Spring Cloud Eureka是Spring Cloud Netflix 子项目的核心组件之一，主要用于微服务架构中的服务治理
+Eureka Server提供服务注册服务
+各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观看到。
+EurekaClient通过注册中心进行访问
+它是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询(round-robin)负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳(默认周期为30秒)。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer将会从服务注册表中把这个服务节点移除（默认90秒)
+部署Eureka server POM 文件 导入依赖
+&lt;dependency&gt; &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt; &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt; &lt;/dependency&gt; 启动类 @EnableEurekaServer
+@SpringBootApplication @EnableEurekaServer public class EurekaApplication { public static void main(String[] args) { SpringApplication.run(EurekaApplication.class, args); } } application.yml 配置
+server: port: 7001 eureka: instance: hostname: eureka7001 #eureka 实例名称 client: register-with-eureka: false fetch-registry: false service-url: defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ 玩了之后启动服务，在浏览器输入本机IP&#43;端口号即可访问
+部署Eureka Client 上面我们已经完成了，eureka服务端的部署，现在我们来部署一个客户端。并将它注册到服务端
+POM文件引入依赖
+&lt;dependency&gt; &lt;groupId&gt;org."/>
+
+    <meta property="og:title" content="服务注册中心：eureka、zookeeper、consul" />
+<meta property="og:description" content="前言 在传统的RPC远程调用框架中，管理服务与服务之间依赖关系比较复杂，所以需要使用服务治理，管理服务于服务之间依赖关系，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。
+Eureka 简介 Spring Cloud Eureka是Spring Cloud Netflix 子项目的核心组件之一，主要用于微服务架构中的服务治理
+Eureka Server提供服务注册服务
+各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观看到。
+EurekaClient通过注册中心进行访问
+它是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询(round-robin)负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳(默认周期为30秒)。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer将会从服务注册表中把这个服务节点移除（默认90秒)
+部署Eureka server POM 文件 导入依赖
+&lt;dependency&gt; &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt; &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt; &lt;/dependency&gt; 启动类 @EnableEurekaServer
+@SpringBootApplication @EnableEurekaServer public class EurekaApplication { public static void main(String[] args) { SpringApplication.run(EurekaApplication.class, args); } } application.yml 配置
+server: port: 7001 eureka: instance: hostname: eureka7001 #eureka 实例名称 client: register-with-eureka: false fetch-registry: false service-url: defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ 玩了之后启动服务，在浏览器输入本机IP&#43;端口号即可访问
+部署Eureka Client 上面我们已经完成了，eureka服务端的部署，现在我们来部署一个客户端。并将它注册到服务端
+POM文件引入依赖
+&lt;dependency&gt; &lt;groupId&gt;org." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ko1a.github.io/post/210312/" />
+<meta property="article:published_time" content="2020-12-30T13:21:20+08:00" />
+<meta property="article:modified_time" content="2020-12-30T13:21:20+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://ko1a.github.io/"><img class="app-header-avatar" src="https://pic4.zhimg.com/80/v2-2f47aaadf2eef73c77a4497a67181854_1440w.jpg?source=1940ef5c" alt="wangqiang" /></a>
+      <h1>阿强的blog</h1>
+      <p>go for it</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">服务注册中心：eureka、zookeeper、consul</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 30, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://ko1a.github.io/tags/java/">Java</a>
+              <a class="tag" href="https://ko1a.github.io/tags/eureka/">eureka</a>
+              <a class="tag" href="https://ko1a.github.io/tags/springcloud/">springcloud</a>
+              <a class="tag" href="https://ko1a.github.io/tags/zookeeper/">zookeeper</a>
+              <a class="tag" href="https://ko1a.github.io/tags/consul/">consul</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="前言">前言</h2>
+<p>在传统的RPC远程调用框架中，管理服务与服务之间依赖关系比较复杂，所以需要使用服务治理，管理服务于服务之间依赖关系，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。</p>
+<h2 id="eureka">Eureka</h2>
+<h3 id="简介">简介</h3>
+<p>Spring Cloud Eureka是Spring Cloud Netflix 子项目的核心组件之一，主要用于微服务架构中的服务治理</p>
+<p><strong>Eureka Server提供服务注册服务</strong></p>
+<p>各个微服务节点通过配置启动后，会在EurekaServer中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观看到。</p>
+<p><strong>EurekaClient通过注册中心进行访问</strong></p>
+<p>它是一个Java客户端，用于简化Eureka Server的交互，客户端同时也具备一个内置的、使用轮询(round-robin)负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳(默认周期为30秒)。如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer将会从服务注册表中把这个服务节点移除（默认90秒)</p>
+<h3 id="部署eureka-server">部署Eureka server</h3>
+<p>POM 文件 导入依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-server<span style="color:#f92672">&lt;/artifactId&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div><p>启动类 @EnableEurekaServer</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#a6e22e">@EnableEurekaServer</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EurekaApplication</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>EurekaApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>application.yml 配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">server</span>:
+  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">7001</span>
+<span style="color:#f92672">eureka</span>:
+  <span style="color:#f92672">instance</span>:
+    <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">eureka7001</span> <span style="color:#75715e">#eureka 实例名称</span>
+  <span style="color:#f92672">client</span>:
+    <span style="color:#f92672">register-with-eureka</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">fetch-registry</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">service-url</span>:
+      <span style="color:#f92672">defaultZone</span>: <span style="color:#ae81ff">http://${eureka.instance.hostname}:${server.port}/eureka/</span>
+
+</code></pre></div><p>玩了之后启动服务，在浏览器输入本机IP+端口号即可访问</p>
+<p><img src="/images/image-20210312153506461.png" alt="image-20210312153506461"></p>
+<h3 id="部署eureka-client">部署Eureka Client</h3>
+<p>上面我们已经完成了，eureka服务端的部署，现在我们来部署一个客户端。并将它注册到服务端</p>
+<p>POM文件引入依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-netflix-eureka-client<span style="color:#f92672">&lt;/artifactId&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div><p>启动类 注解@EnableEurekaClient</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#a6e22e">@EnableEurekaClient</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PaymentApplication</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>PaymentApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>application.yml 配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">eureka</span>:
+  <span style="color:#f92672">client</span>:
+    <span style="color:#75715e">#表示是否将自己注册进Eurekaserver默认为true。</span>
+    <span style="color:#f92672">register-with-eureka</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#75715e">#是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡</span>
+    <span style="color:#f92672">fetchRegistry</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">service-url</span>:
+      <span style="color:#f92672">defaultZone</span>: <span style="color:#ae81ff">http://localhost:7001/eureka</span>
+</code></pre></div><p>启动完成之后，重新打开eureka 地址。发现注册成功！</p>
+<p><img src="/images/image-20210312154923924.png" alt="image-20210312154923924"></p>
+<h3 id="eureka-自我保护">Eureka 自我保护</h3>
+<p>保护模式主要用于一组客户端和Eureka Server之间存在网络分区场景下的保护。一旦进入保护模式，Eureka Server将会尝试保护其服务注册表中的信息，不再删除服务注册表中的数据，也就是不会注销任何微服务。</p>
+<p>一句话：某时刻某一个微服务不可用了，Eureka不会立刻清理，依旧会对该微服务的信息进行保存，属于CAP里面的AP分支。</p>
+<p><strong>禁用自我保护</strong></p>
+<p>在开发过程中，我们常常希望Eureka Server能够迅速有效地踢出已关停的节点，但是由于Eureka自我保护模式，以及心跳周期长的原因，常常会遇到Eureka Server不踢出已关停的节点的问题</p>
+<p>服务端：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">eureka</span>:
+  <span style="color:#f92672">server</span>:
+    <span style="color:#75715e">#关闭自我保护机制，保证不可用服务被及时踢除</span>
+    <span style="color:#f92672">enable-self-preservation</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#75715e">#清理无效节点的时间间隔</span>
+    <span style="color:#f92672">eviction-interval-timer-in-ms</span>: <span style="color:#ae81ff">2000</span>
+</code></pre></div><p>客户端：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">eureka</span>:
+  <span style="color:#f92672">instance</span>:
+    <span style="color:#75715e">#心跳检测与续约时间</span>
+    <span style="color:#75715e">#开发时没置小些，保证服务关闭后注册中心能即使剔除服务</span>
+    <span style="color:#75715e">#Eureka客户端向服务端发送心跳的时间间隔，单位为秒(默认是30秒)</span>
+    <span style="color:#f92672">lease-renewal-interval-in-seconds</span>: <span style="color:#ae81ff">1</span>
+    <span style="color:#75715e">#eureka server至上一次收到client的心跳之后，等待下一次心跳的超时时间(默认30秒)，</span>
+    <span style="color:#75715e">#在这个时间内若没收到下一次心跳，则将剔除服务</span>
+    <span style="color:#f92672">lease-expiration-duration-in-seconds</span>: <span style="color:#ae81ff">2</span>
+
+</code></pre></div><h2 id="zookeeper">Zookeeper</h2>
+<h3 id="简介-1">简介</h3>
+<p>ZooKeeper 是一个开源的分布式协调服务，由雅虎创建，是 Google Chubby 的开源实现，它也可以当做注册中心使用</p>
+<p><a href="https://zookeeper.apache.org/releases.html">zookeeper 下载安装地址</a></p>
+<p>启动</p>
+<pre><code>cd zookeeper-3.4.10
+cd conf
+cp zoo_sample.cfg zoo.cfg
+cd ../bin
+sh zkServer.sh start
+</code></pre><h3 id="将服务注册到zookeeper">将服务注册到ZooKeeper</h3>
+<p>POM导入依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-zookeeper-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div><p>启动类 注解：@EnableDiscoveryClient</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#a6e22e">@EnableDiscoveryClient</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PaymentApplication</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>PaymentApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>application.yml 配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">#8004表示注册到zookeeper服务器的支付服务提供者端口号</span>
+<span style="color:#f92672">server</span>:
+  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8004</span>
+<span style="color:#75715e">#服务别名----注册zookeeper到注册中心名称</span>
+<span style="color:#f92672">spring</span>:
+  <span style="color:#f92672">application</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cloud-payment-service</span>
+  <span style="color:#f92672">cloud</span>:
+    <span style="color:#f92672">zookeeper</span>:
+      <span style="color:#f92672">connect-string</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">2181</span>  <span style="color:#75715e">#zookeeper 地址+端口号</span>
+</code></pre></div><p>启动完成之后,验证一下，成功~</p>
+<pre><code>[zk: localhost:2181(CONNECTED) 0] ls /
+[services, zookeeper]
+[zk: localhost:2181(CONNECTED) 1] ls /services/cloud-payment-service
+[a4567f50-6ad9-47a3-9fbb-7391f41a9f3d]
+[zk: localhost:2181(CONNECTED) 2] get /services/cloud-payment-service/a4567f50-6ad9-47a3-9fbb-7391f41a9f3d
+{&quot;name&quot;:&quot;cloud-payment-service&quot;,&quot;id&quot;:&quot;a4567f50-6ad9-47a3-9fbb-7391f41a9f3d&quot;,&quot;address&quot;:&quot;192.168.199.218&quot;,&quot;port&quot;:8004,&quot;ss
+lPort&quot;:null,&quot;payload&quot;:{&quot;@class&quot;:&quot;org.springframework.cloud.zookeeper.discovery.ZookeeperInstance&quot;,&quot;id&quot;:&quot;application-1&quot;,&quot;
+name&quot;:&quot;cloud-payment-service&quot;,&quot;metadata&quot;:{}},&quot;registrationTimeUTC&quot;:1612811116918,&quot;serviceType&quot;:&quot;DYNAMIC&quot;,&quot;uriSpec&quot;:{&quot;pa
+rts&quot;:[{&quot;value&quot;:&quot;scheme&quot;,&quot;variable&quot;:true},{&quot;value&quot;:&quot;://&quot;,&quot;variable&quot;:false},{&quot;value&quot;:&quot;address&quot;,&quot;variable&quot;:true},{&quot;value&quot;:&quot;
+:&quot;,&quot;variable&quot;:false},{&quot;value&quot;:&quot;port&quot;,&quot;variable&quot;:true}]}}
+[zk: localhost:2181(CONNECTED) 3]
+</code></pre><h2 id="consul">Consul</h2>
+<h3 id="简介-2">简介</h3>
+<p><a href="https://www.consul.io/">Consul 官网</a></p>
+<p>Consul是一套开源的分布式服务发现和配置管理系统，由HashiCorp 公司用Go语言开发。提供了微服务系统中的服务治理、配置中心、控制总线等功能。这些功能中的每一个都可以根据需要单独使用，也可以一起使用以构建全方位的服务网格，总之Consul提供了一种完整的服务网格解决方案。</p>
+<p>它具有很多优点。包括：基于raft协议，比较简洁；支持健康检查，同时支持HTTP和DNS协议支持跨数据中心的WAN集群提供图形界面跨平台，支持Linux、Mac、Windows。</p>
+<p><a href="https://learn.hashicorp.com/consul/getting-started/install.html">官网安装说明</a></p>
+<p>安装完成之后启动：<code>consul agent -dev</code>，打开浏览器：http://localhost:8500 进入控制台页面</p>
+<h3 id="服务注册到consul">服务注册到consul</h3>
+<p>POM文件 引入依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.cloud<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>spring-cloud-starter-consul-discovery<span style="color:#f92672">&lt;/artifactId&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+
+</code></pre></div><p>启动类 注解：@EnableDiscoveryClient</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#a6e22e">@EnableDiscoveryClient</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PaymentApplication</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>PaymentApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>application.yml 配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e">###consul服务端口号</span>
+<span style="color:#f92672">server</span>:
+  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8006</span>
+
+<span style="color:#f92672">spring</span>:
+  <span style="color:#f92672">application</span>:
+    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cloud-payment-service</span>
+<span style="color:#75715e">####consul注册中心地址</span>
+  <span style="color:#f92672">cloud</span>:
+    <span style="color:#f92672">consul</span>:
+      <span style="color:#f92672">host</span>: <span style="color:#ae81ff">localhost</span>
+      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8500</span>
+      <span style="color:#f92672">discovery</span>:
+        <span style="color:#75715e">#hostname: 127.0.0.1</span>
+        <span style="color:#f92672">service-name</span>: <span style="color:#ae81ff">${spring.application.name}</span>
+</code></pre></div><p>启动完成之后，在consul 就可以看到 注册的服务啦~</p>
+<h2 id="三种服务注册中心的区别">三种服务注册中心的区别</h2>
+<table>
+<thead>
+<tr>
+<th>组件名</th>
+<th>语言CAP</th>
+<th>服务健康检查</th>
+<th>对外暴露接口</th>
+<th>Spring Cloud集成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eureka</td>
+<td>Java</td>
+<td>AP</td>
+<td>可配支持</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>Consul</td>
+<td>Go</td>
+<td>CP</td>
+<td>支持</td>
+<td>HTTP/DNS</td>
+</tr>
+<tr>
+<td>Zookeeper</td>
+<td>Java</td>
+<td>CP</td>
+<td>支持客户端</td>
+<td>已集成</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CAP：</strong></p>
+<ul>
+<li><strong>C：Consistency (强一致性)</strong></li>
+<li><strong>A：Availability (可用性)</strong></li>
+<li><strong>P：Partition tolerance （分区容错性)</strong></li>
+</ul>
+<p><strong>最多只能同时较好的满足两个。</strong></p>
+<p><strong>CAP理论的核心是：一个分布式系统不可能同时很好的满足一致性，可用性和分区容错性这三个需求。</strong></p>
+<p><strong>因此，根据CAP原理将NoSQL数据库分成了满足CA原则、满足CP原则和满足AP原则三大类:</strong></p>
+<p><strong>CA - 单点集群，满足—致性，可用性的系统，通常在可扩展性上不太强大。</strong>
+<strong>CP - 满足一致性，分区容忍必的系统，通常性能不是特别高。</strong>
+<strong>AP - 满足可用性，分区容忍性的系统，通常可能对一致性要求低一些。</strong></p>
+<p><strong>CP 与 AP 对立同一的矛盾关系。</strong></p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
