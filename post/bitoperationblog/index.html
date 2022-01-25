@@ -27,8 +27,8 @@ static final int tableSizeFor(int cap) { int n = cap - 1; n |= n &gt;&gt;&gt; 1;
 Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ko1a.github.io/post/bitoperationblog/" />
-<meta property="article:published_time" content="2020-05-20T18:02:17+08:00" />
-<meta property="article:modified_time" content="2020-05-20T18:02:17+08:00" />
+<meta property="article:published_time" content="2021-05-20T18:02:17+08:00" />
+<meta property="article:modified_time" content="2021-05-20T18:02:17+08:00" />
 
 
   </head>
@@ -52,7 +52,7 @@ Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit
   <title>calendar</title>
   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
 </svg>
-          May 20, 2020
+          May 20, 2021
         </div>
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
@@ -265,7 +265,6 @@ b的二进制:1001
 b的二进制:1001
 二进制结果:1001
 十进制结果:9
-
 </code></pre></div><h4 id="按位异或">^:按位异或</h4>
 <p><strong>规则:如果相对应位值相同，则结果为0，否则为1(相同得0)</strong></p>
 <p>举个栗子:</p>
@@ -363,7 +362,6 @@ b的二进制:1001
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">a的二进制:11111111111111111111111111111011
 二进制结果:00111111111111111111111111111110
 十进制结果:1073741822
-
 </code></pre></div><p><strong>总结:有符号、无符号 看的就是二进制的符号位， 无符号:就不管符号位，右移只填充0；有符号，就是符号位是啥，我就填充啥</strong></p>
 <h2 id="结语">结语</h2>
 <p><strong>位运算是计算机最擅长的运算，jdk的源码中也大量地使用了它，搞明白它有助于更方便的阅读底层代码,提高自己的技能</strong></p>

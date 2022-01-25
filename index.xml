@@ -6,7 +6,71 @@
     <description>Recent content on 阿强的blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Dec 2020 13:21:20 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Jan 2022 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sentinel使用(一)</title>
+      <link>https://ko1a.github.io/post/sentinel1/</link>
+      <pubDate>Wed, 19 Jan 2022 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/sentinel1/</guid>
+      <description>概述 Sentinel是什么 随着微服务的流行，服务和服务之间的稳定性变得越来越重要。Sentinel 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+官方文档
+Sentinel 具有以下特征:
+ 丰富的应用场景：Sentinel 承接了阿里巴巴近 10 年的双十一大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、集群流量控制、实时熔断下游不可用应用等。 完备的实时监控：Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况。 广泛的开源生态：Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Dubbo、gRPC 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。 完善的 SPI 扩展点：Sentinel 提供简单易用、完善的 SPI 扩展接口。您可以通过实现扩展接口来快速地定制逻辑。例如定制规则管理、适配动态数据源等。  下载安装Sentinel 下载地址：Sentinel/releases
+我这里选择的是:sentinel-dashboard-1.8.2.jar
+通过命令启动：
+java -jar sentinel-dashboard-1.8.2.jar
+sentinel-dashboard不像Nacos的服务端那样提供了外置的配置文件，比较容易修改参数。不过不要紧，由于sentinel-dashboard是一个标准的spring boot应用，所以如果要自定义端口号等内容的话，可以通过在启动命令中增加参数来调整，比如：-Dserver.port=8888。
+默认情况下，sentinel-dashboard以8080端口启动，所以可以通过访问：localhost:8080来验证是否已经启动成功，如果一切顺利的话，可以看到如下页面
+注意：只有1.6.0及以上版本，才有这个简单的登录页面。默认用户名和密码都是sentinel。对于用户登录的相关配置可以在启动命令中增加下面的参数来进行配置：
+ -Dsentinel.dashboard.auth.username=sentinel: 用于指定控制台的登录用户名为 sentinel； -Dsentinel.dashboard.auth.password=123456: 用于指定控制台的登录密码为 123456；如果省略这两个参数，默认用户和密码均为 sentinel -Dserver.servlet.session.timeout=7200: 用于指定 Spring Boot 服务端 session 的过期时间，如 7200 表示 7200 秒；60m 表示 60 分钟，默认为 30 分钟；  输入账户密码登录后，可以看到如下页面：
+整合Sentinel 第一步：在Spring Cloud应用的pom.xml中引入Spring Cloud Alibaba的Sentinel模块：</description>
+    </item>
+    
+    <item>
+      <title>手撕HashMap(Jdk8)</title>
+      <link>https://ko1a.github.io/post/blog2hashmap/</link>
+      <pubDate>Sat, 19 Jun 2021 13:20:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/blog2hashmap/</guid>
+      <description>概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
+ 一、基础知识   数组
+数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
+优点:
+ 可以保存若干个数据 随机访问的效率很高。根据下标访问元素效率高（元素连续分配空间）。  缺点:
+ 数组的元素的类型必须一致 数组定长，不能自动扩容 删除元素、插入元素效率比较低，需要移动大量的元素    链表
+链表在内存中不是连续的空间,每一块空间有一块引用保存下一块内存的地址
+图是单链表
+优点:
+ 任意加减元素 添加或者删除元素时只需要改变前后两个元素结点的指针域指向地址即可 添加，删除效率高  缺点:
+ 因为含有大量的指针域，占用空间较大 查找元素需要遍历链表来查找    散列表
+散列表结构基于 数组+链表 ,整合了数组的快速索引和链表的动态扩容的优势
+  什么是哈希(hash)
+hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash算法变成固定长度的输出.这个映射规则就是对应的hash算法,原始数据映射后的二进制串就是哈希值(hashCode)
+特点:
+  从hash值不能反向推导出原始数据
+  输入的数据微小变化会得到完全不同的hash值,相同的数据会得到相同的hash值
+  hash算法的执行效率高,长文本也能快速计算hash值
+  hash算法的冲突概率要小
+   hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
+比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
+  二、基本原理 存储结构 结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。
+HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（或树形结构）组成。</description>
+    </item>
+    
+    <item>
+      <title>java中的位运算</title>
+      <link>https://ko1a.github.io/post/bitoperationblog/</link>
+      <pubDate>Thu, 20 May 2021 18:02:17 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/bitoperationblog/</guid>
+      <description>写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
+static final int tableSizeFor(int cap) { int n = cap - 1; n |= n &amp;gt;&amp;gt;&amp;gt; 1; n |= n &amp;gt;&amp;gt;&amp;gt; 2; n |= n &amp;gt;&amp;gt;&amp;gt; 4; n |= n &amp;gt;&amp;gt;&amp;gt; 8; n |= n &amp;gt;&amp;gt;&amp;gt; 16; return (n &amp;lt; 0) ? 1 : (n &amp;gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1; } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
+关于二进制 一切的起源都要从二进制开始&amp;hellip;在了解位之前,有必要先知道二进制的概念
+百度百科:二进制
+Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API</description>
+    </item>
+    
     <item>
       <title>服务注册中心：eureka、zookeeper、consul</title>
       <link>https://ko1a.github.io/post/210312/</link>
@@ -40,50 +104,6 @@ POM文件引入依赖
 &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;beans xmlns=&amp;#34;http://www.springframework.org/schema/beans&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34; http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd&amp;#34;&amp;gt; &amp;lt;bean id=&amp;#34;MyBean&amp;#34; class=&amp;#34;com.bean.MyBean&amp;#34;&amp;gt; &amp;lt;property name=&amp;#34;name&amp;#34; value=&amp;#34;阿强&amp;#34;/&amp;gt; &amp;lt;/bean&amp;gt; &amp;lt;/beans&amp;gt; 看一下@Configuration的内部实现
 @Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface Configuration { ... } 可以看到,它里面也用到了@Component 注解,意味着他也是个组件,将注册到spring 容器中
 @Configuration 注解在spring boot 2.0 之后新加了一个属性:proxyBeanMethods是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能</description>
-    </item>
-    
-    <item>
-      <title>手撕HashMap(Jdk8)</title>
-      <link>https://ko1a.github.io/post/blog2hashmap/</link>
-      <pubDate>Fri, 19 Jun 2020 13:20:17 +0800</pubDate>
-      
-      <guid>https://ko1a.github.io/post/blog2hashmap/</guid>
-      <description>概述 今天我们来聊聊,我们日常开发中最常用的一个集合类:HashMap,在我们面试中也会被经常问到相关问题,由于HashMap数据结构较为复杂，回答相关问题的时候往往不尽人意，尤其是在JDK1.8之后，又引入了红黑树结构，其数据结构变的更加复杂，那么本文会分成三个部分来透彻的对HashMap进行分析.
- 一、基础知识   数组
-数组是在内存中存储相同数据类型的连续的空间,每一个数据称作一个元素，每个元素可以通过一个索引(下标)来访问它们.
-优点:
- 可以保存若干个数据 随机访问的效率很高。根据下标访问元素效率高（元素连续分配空间）。  缺点:
- 数组的元素的类型必须一致 数组定长，不能自动扩容 删除元素、插入元素效率比较低，需要移动大量的元素    链表
-链表在内存中不是连续的空间,每一块空间有一块引用保存下一块内存的地址
-图是单链表
-优点:
- 任意加减元素 添加或者删除元素时只需要改变前后两个元素结点的指针域指向地址即可 添加，删除效率高  缺点:
- 因为含有大量的指针域，占用空间较大 查找元素需要遍历链表来查找    散列表
-散列表结构基于 数组+链表 ,整合了数组的快速索引和链表的动态扩容的优势
-  什么是哈希(hash)
-hash 也成散列,哈希,基本原理就是把任意长度的输入,通过hash算法变成固定长度的输出.这个映射规则就是对应的hash算法,原始数据映射后的二进制串就是哈希值(hashCode)
-特点:
-  从hash值不能反向推导出原始数据
-  输入的数据微小变化会得到完全不同的hash值,相同的数据会得到相同的hash值
-  hash算法的执行效率高,长文本也能快速计算hash值
-  hash算法的冲突概率要小
-   hash碰撞:由于hash原理是将输入空间的值映射成hash空间内,并且hash值得空间远小于输入的空间
-比如:桌上十个苹果,放到九个抽屉里面,无论如何都会重复.这一现象称为:抽屉原理
-  二、基本原理 存储结构 结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。
-HashMap 使用拉链式的散列算法,其数据结构是由数组和链表（或树形结构）组成。</description>
-    </item>
-    
-    <item>
-      <title>java中的位运算</title>
-      <link>https://ko1a.github.io/post/bitoperationblog/</link>
-      <pubDate>Wed, 20 May 2020 18:02:17 +0800</pubDate>
-      
-      <guid>https://ko1a.github.io/post/bitoperationblog/</guid>
-      <description>写在前面的话 关于位运算,有一种既熟悉又陌生的感觉.熟悉是因为我们当初学java基础的时候,应该也都学过.并且平常在阅读一些源码的时候经常看见它的身影,比如说HashMap的源码 ↓↓↓
-static final int tableSizeFor(int cap) { int n = cap - 1; n |= n &amp;gt;&amp;gt;&amp;gt; 1; n |= n &amp;gt;&amp;gt;&amp;gt; 2; n |= n &amp;gt;&amp;gt;&amp;gt; 4; n |= n &amp;gt;&amp;gt;&amp;gt; 8; n |= n &amp;gt;&amp;gt;&amp;gt; 16; return (n &amp;lt; 0) ? 1 : (n &amp;gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1; } 陌生是因为日常开发中,大概率是不会去使用它. 结论:你可以不去使用它,但你必须得懂它
-关于二进制 一切的起源都要从二进制开始&amp;hellip;在了解位之前,有必要先知道二进制的概念
-百度百科:二进制
-Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit //换算下来，一个int类型即占32bit int i = 5; //这里的5为十进制，转换为二进制为：101，使用完整的32位表示即为：00000000 00000000 00000000 00000101 Java 提供了进制转换的API</description>
     </item>
     
     <item>

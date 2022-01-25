@@ -79,11 +79,10 @@
 <p>在我们利用spring boot日常开发中,包括spring boot源码里.经常会出现一些很常见的注解.所以就想着花点时间总结一下&hellip;</p>
 <h3 id="configuration">@Configuration</h3>
 <p><strong>它一般用来声明一个配置类,用来代替 xml 配置文件</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
-<span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
-  
-  	<span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
+
+      <span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Bean</span>
     <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
@@ -114,8 +113,8 @@
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@import</span><span style="color:#f92672">(</span>MyBean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span><span style="color:#75715e">//和下面@Bean 注解是一样的效果
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyConfig</span> <span style="color:#f92672">{</span>
-  
-  	<span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
+
+      <span style="color:#75715e">// 将MyBean 注册到spring 容器中, 方法名就是 beanNname
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Bean</span>
     <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
@@ -140,8 +139,8 @@
     <span style="color:#66d9ef">public</span> MyBean <span style="color:#a6e22e">myBean1</span><span style="color:#f92672">(){</span>
         <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> MyBean<span style="color:#f92672">();</span>
     <span style="color:#f92672">}</span>
-		
-  	<span style="color:#75715e">// 当MyBean 这个类,在IOC容器中存在,才将Student 注册到IOC
+
+      <span style="color:#75715e">// 当MyBean 这个类,在IOC容器中存在,才将Student 注册到IOC
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@ConditionalOnBean</span><span style="color:#f92672">(</span>MyBean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
     <span style="color:#a6e22e">@Bean</span>
     <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">Stu</span><span style="color:#f92672">(){</span>
