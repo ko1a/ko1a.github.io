@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>spring启动流程,源码解析 // 阿强的blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.80.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="wangqiang" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://ko1a.github.io/css/main.min.4c1a909e6fe10d8fe1d9033af603c9b9a7803efa8046860032882a48f84a40f1.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="spring启动流程,源码解析"/>
+<meta name="twitter:description" content="概述 在Java后端开发领域，大名鼎鼎的Spring Boot框架想必大家都用过。
+用过Spring Boot的应该都知道，在项目启动入口的主类main()方法里，一句简简单单的
+SpringApplication.run(Application.class, args); 便开启了项目的启动运行之路。
+@SpringBootApplication public class Application { public static void main(String[] args) { SpringApplication.run(Application.class, args); } } 本文我们就来看看这个 SpringApplication 以及 run() 方法 到底是个什么鬼，它背后又隐藏了哪些奥秘呢？
+1.SpringApplication实例的初始化 还是先对照代码来看：
+四个关键的步骤已标注在图中，分别解释如下：
+ ① 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种   ② 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中所有可用的 ApplicationContextInitializer   ③ 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中的所有可用的 ApplicationListener   ④ 推断并设置main方法的定义类  2.SpringApplication的run()方法 看代码长啥样子：
+public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch = new StopWatch(); stopWatch.start(); ConfigurableApplicationContext context = null; Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList(); this."/>
+
+    <meta property="og:title" content="spring启动流程,源码解析" />
+<meta property="og:description" content="概述 在Java后端开发领域，大名鼎鼎的Spring Boot框架想必大家都用过。
+用过Spring Boot的应该都知道，在项目启动入口的主类main()方法里，一句简简单单的
+SpringApplication.run(Application.class, args); 便开启了项目的启动运行之路。
+@SpringBootApplication public class Application { public static void main(String[] args) { SpringApplication.run(Application.class, args); } } 本文我们就来看看这个 SpringApplication 以及 run() 方法 到底是个什么鬼，它背后又隐藏了哪些奥秘呢？
+1.SpringApplication实例的初始化 还是先对照代码来看：
+四个关键的步骤已标注在图中，分别解释如下：
+ ① 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种   ② 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中所有可用的 ApplicationContextInitializer   ③ 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中的所有可用的 ApplicationListener   ④ 推断并设置main方法的定义类  2.SpringApplication的run()方法 看代码长啥样子：
+public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch = new StopWatch(); stopWatch.start(); ConfigurableApplicationContext context = null; Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList(); this." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ko1a.github.io/post/springbootstartprocess/" />
+<meta property="article:published_time" content="2021-12-20T17:24:57+08:00" />
+<meta property="article:modified_time" content="2021-12-20T17:24:57+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://ko1a.github.io/"><img class="app-header-avatar" src="https://pic4.zhimg.com/80/v2-2f47aaadf2eef73c77a4497a67181854_1440w.jpg?source=1940ef5c" alt="wangqiang" /></a>
+      <h1>阿强的blog</h1>
+      <p>go for it</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">spring启动流程,源码解析</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Dec 20, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+              <a class="tag" href="https://ko1a.github.io/tags/java/">Java</a>
+              <a class="tag" href="https://ko1a.github.io/tags/springboot/">springboot</a>
+              <a class="tag" href="https://ko1a.github.io/tags/spring/">spring</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h2 id="概述">概述</h2>
+<p>在<code>Java</code>后端开发领域，大名鼎鼎的<code>Spring Boot</code>框架想必大家都用过。</p>
+<p>用过<code>Spring Boot</code>的应该都知道，在项目启动入口的主类<code>main()</code>方法里，一句简简单单的</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>Application<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+</code></pre></div><p>便开启了项目的启动运行之路。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@SpringBootApplication</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Application</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        SpringApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>Application<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>本文我们就来看看这个 <strong>SpringApplication</strong> 以及 <strong>run()</strong> 方法 到底是个什么鬼，它背后又隐藏了哪些奥秘呢？</p>
+<h3 id="1springapplication实例的初始化">1.SpringApplication实例的初始化</h3>
+<p>还是先对照代码来看：</p>
+<p><!-- raw HTML omitted --></p>
+<p>四个关键的步骤已标注在图中，分别解释如下：</p>
+<ul>
+<li><strong>①</strong> 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种</li>
+</ul>
+<p><!-- raw HTML omitted --></p>
+<ul>
+<li><strong>②</strong> 使用<code>SpringFactoriesLoader</code>查找并加载<code>classpath下META-INF/spring.factories</code>文件中所有可用的 <code>ApplicationContextInitializer</code></li>
+</ul>
+<p><!-- raw HTML omitted --></p>
+<ul>
+<li><strong>③</strong> 使用<code>SpringFactoriesLoader</code>查找并加载<code>classpath下META-INF/spring.factories</code>文件中的所有可用的 <code>ApplicationListener</code></li>
+</ul>
+<p><!-- raw HTML omitted --></p>
+<ul>
+<li><strong>④</strong> 推断并设置<code>main</code>方法的定义类</li>
+</ul>
+<p><!-- raw HTML omitted --></p>
+<h3 id="2springapplication的run方法">2.SpringApplication的run()方法</h3>
+<p>看代码长啥样子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> ConfigurableApplicationContext <span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>String<span style="color:#f92672">...</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        StopWatch stopWatch <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StopWatch<span style="color:#f92672">();</span>
+        stopWatch<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        ConfigurableApplicationContext context <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        Collection<span style="color:#f92672">&lt;</span>SpringBootExceptionReporter<span style="color:#f92672">&gt;</span> exceptionReporters <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configureHeadlessProperty</span><span style="color:#f92672">();</span>
+        SpringApplicationRunListeners listeners <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getRunListeners</span><span style="color:#f92672">(</span>args<span style="color:#f92672">);</span>
+        listeners<span style="color:#f92672">.</span><span style="color:#a6e22e">starting</span><span style="color:#f92672">();</span>
+        Collection exceptionReporters<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            ApplicationArguments applicationArguments <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultApplicationArguments<span style="color:#f92672">(</span>args<span style="color:#f92672">);</span>
+            ConfigurableEnvironment environment <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">prepareEnvironment</span><span style="color:#f92672">(</span>listeners<span style="color:#f92672">,</span> applicationArguments<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configureIgnoreBeanInfo</span><span style="color:#f92672">(</span>environment<span style="color:#f92672">);</span>
+            Banner printedBanner <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">printBanner</span><span style="color:#f92672">(</span>environment<span style="color:#f92672">);</span>
+            context <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">createApplicationContext</span><span style="color:#f92672">();</span>
+            exceptionReporters <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getSpringFactoriesInstances</span><span style="color:#f92672">(</span>SpringBootExceptionReporter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[]{</span>ConfigurableApplicationContext<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">},</span> context<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">prepareContext</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> environment<span style="color:#f92672">,</span> listeners<span style="color:#f92672">,</span> applicationArguments<span style="color:#f92672">,</span> printedBanner<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">refreshContext</span><span style="color:#f92672">(</span>context<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">afterRefresh</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> applicationArguments<span style="color:#f92672">);</span>
+            stopWatch<span style="color:#f92672">.</span><span style="color:#a6e22e">stop</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">logStartupInfo</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> StartupInfoLogger<span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mainApplicationClass</span><span style="color:#f92672">)).</span><span style="color:#a6e22e">logStarted</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getApplicationLog</span><span style="color:#f92672">(),</span> stopWatch<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+
+            listeners<span style="color:#f92672">.</span><span style="color:#a6e22e">started</span><span style="color:#f92672">(</span>context<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">callRunners</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> applicationArguments<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable var10<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">handleRunFailure</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> var10<span style="color:#f92672">,</span> exceptionReporters<span style="color:#f92672">,</span> listeners<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span>var10<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            listeners<span style="color:#f92672">.</span><span style="color:#a6e22e">running</span><span style="color:#f92672">(</span>context<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">return</span> context<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable var9<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">handleRunFailure</span><span style="color:#f92672">(</span>context<span style="color:#f92672">,</span> var9<span style="color:#f92672">,</span> exceptionReporters<span style="color:#f92672">,</span> <span style="color:#f92672">(</span>SpringApplicationRunListeners<span style="color:#f92672">)</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span>var9<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>在网上找了一个流程图对照理解：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/xq9PqibkVAzrAHumrhIwmmQMCNczeYg0Z6cmI2cNU0wHPPb5Q5PrEHDpqffykiayW1ypV7cvsicNcbUW7D7j9NKKQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>我们将各步骤总结精炼如下：</p>
+<ol>
+<li>通过 <code>SpringFactoriesLoader</code> 加载 <code>META-INF/spring.factories</code> 文件，获取并创建 <code>SpringApplicationRunListener</code> 对象</li>
+<li>然后由 <code>SpringApplicationRunListener</code> 来发出 <code>starting</code> 消息</li>
+<li>创建参数，并配置当前 <code>SpringBoot</code> 应用将要使用的 <code>Environment</code></li>
+<li>完成之后，依然由 <code>SpringApplicationRunListener</code> 来发出 <code>environmentPrepared</code> 消息</li>
+<li>创建 <code>ApplicationContext</code></li>
+<li>初始化 <code>ApplicationContext</code>，并设置 <code>Environment</code>，加载相关配置等</li>
+<li>由 <code>SpringApplicationRunListener</code> 来发出 <code>contextPrepared</code> 消息，告知Spring Boot 应用使用的 <code>ApplicationContext</code> 已准备OK</li>
+<li>将各种 <code>beans</code> 装载入 <code>ApplicationContext</code>，继续由 <code>SpringApplicationRunListener</code> 来发出 <code>contextLoaded</code> 消息，告知 Spring Boot 应用使用的 <code>ApplicationContext</code> 已装填OK</li>
+<li><code>refresh ApplicationContext</code>，完成IoC容器可用的最后一步</li>
+<li>由 <code>SpringApplicationRunListener</code> 来发出 <code>started</code> 消息</li>
+<li>调用<code>callRunners(...)</code>方法，让实现了<code>ApplicationRunner</code>和<code>CommandLineRunner</code>接口类的<code>run</code> 方法得以执行，用于在 Spring 应用上下文准备完毕后，执行一些额外操作。从而完成最终的程序的启动。</li>
+<li>由 <code>SpringApplicationRunListener</code> 来发出 <code>running</code> 消息，告知程序已运行起来了</li>
+</ol>
+<p>至此，全流程结束。</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

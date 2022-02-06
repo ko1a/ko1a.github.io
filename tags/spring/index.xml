@@ -28,6 +28,22 @@ sentinel-dashboard不像Nacos的服务端那样提供了外置的配置文件，
     </item>
     
     <item>
+      <title>spring启动流程,源码解析</title>
+      <link>https://ko1a.github.io/post/springbootstartprocess/</link>
+      <pubDate>Mon, 20 Dec 2021 17:24:57 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/springbootstartprocess/</guid>
+      <description>概述 在Java后端开发领域，大名鼎鼎的Spring Boot框架想必大家都用过。
+用过Spring Boot的应该都知道，在项目启动入口的主类main()方法里，一句简简单单的
+SpringApplication.run(Application.class, args); 便开启了项目的启动运行之路。
+@SpringBootApplication public class Application { public static void main(String[] args) { SpringApplication.run(Application.class, args); } } 本文我们就来看看这个 SpringApplication 以及 run() 方法 到底是个什么鬼，它背后又隐藏了哪些奥秘呢？
+1.SpringApplication实例的初始化 还是先对照代码来看：
+四个关键的步骤已标注在图中，分别解释如下：
+ ① 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种   ② 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中所有可用的 ApplicationContextInitializer   ③ 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中的所有可用的 ApplicationListener   ④ 推断并设置main方法的定义类  2.SpringApplication的run()方法 看代码长啥样子：
+public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch = new StopWatch(); stopWatch.start(); ConfigurableApplicationContext context = null; Collection&amp;lt;SpringBootExceptionReporter&amp;gt; exceptionReporters = new ArrayList(); this.</description>
+    </item>
+    
+    <item>
       <title>spring boot 核心的注解</title>
       <link>https://ko1a.github.io/post/sb_annotations/</link>
       <pubDate>Sat, 19 Dec 2020 13:21:20 +0800</pubDate>

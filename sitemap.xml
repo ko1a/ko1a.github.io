@@ -43,6 +43,16 @@
   </url>
   
   <url>
+    <loc>https://ko1a.github.io/tags/springboot/</loc>
+    <lastmod>2021-12-20T17:24:57+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ko1a.github.io/post/springbootstartprocess/</loc>
+    <lastmod>2021-12-20T17:24:57+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ko1a.github.io/tags/hashmap/</loc>
     <lastmod>2021-06-19T13:20:17+08:00</lastmod>
   </url>
@@ -94,11 +104,6 @@
   
   <url>
     <loc>https://ko1a.github.io/post/sb_annotations/</loc>
-    <lastmod>2020-12-19T13:21:20+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ko1a.github.io/tags/springboot/</loc>
     <lastmod>2020-12-19T13:21:20+08:00</lastmod>
   </url>
   
