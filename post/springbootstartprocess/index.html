@@ -93,24 +93,24 @@ public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch 
 </code></pre></div><p>本文我们就来看看这个 <strong>SpringApplication</strong> 以及 <strong>run()</strong> 方法 到底是个什么鬼，它背后又隐藏了哪些奥秘呢？</p>
 <h3 id="1springapplication实例的初始化">1.SpringApplication实例的初始化</h3>
 <p>还是先对照代码来看：</p>
-<p><!-- raw HTML omitted --></p>
+<p><img src="/images/1644124211028.jpg" alt="图片"></p>
 <p>四个关键的步骤已标注在图中，分别解释如下：</p>
 <ul>
 <li><strong>①</strong> 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种</li>
 </ul>
-<p><!-- raw HTML omitted --></p>
+<p><img src="/images/1644124411406.jpg" alt="图片"></p>
 <ul>
 <li><strong>②</strong> 使用<code>SpringFactoriesLoader</code>查找并加载<code>classpath下META-INF/spring.factories</code>文件中所有可用的 <code>ApplicationContextInitializer</code></li>
 </ul>
-<p><!-- raw HTML omitted --></p>
+<p><img src="/images/1644126036849.jpg" alt="图片"></p>
 <ul>
 <li><strong>③</strong> 使用<code>SpringFactoriesLoader</code>查找并加载<code>classpath下META-INF/spring.factories</code>文件中的所有可用的 <code>ApplicationListener</code></li>
 </ul>
-<p><!-- raw HTML omitted --></p>
+<p><img src="/images/1644126197257.jpg" alt="图片"></p>
 <ul>
 <li><strong>④</strong> 推断并设置<code>main</code>方法的定义类</li>
 </ul>
-<p><!-- raw HTML omitted --></p>
+<p><img src="/images/1644126766247.jpg" alt="图片"></p>
 <h3 id="2springapplication的run方法">2.SpringApplication的run()方法</h3>
 <p>看代码长啥样子：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> ConfigurableApplicationContext <span style="color:#a6e22e">run</span><span style="color:#f92672">(</span>String<span style="color:#f92672">...</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
