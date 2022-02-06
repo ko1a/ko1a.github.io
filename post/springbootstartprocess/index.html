@@ -153,7 +153,7 @@ public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch 
         <span style="color:#f92672">}</span>
     <span style="color:#f92672">}</span>
 </code></pre></div><p>在网上找了一个流程图对照理解：</p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/xq9PqibkVAzrAHumrhIwmmQMCNczeYg0Z6cmI2cNU0wHPPb5Q5PrEHDpqffykiayW1ypV7cvsicNcbUW7D7j9NKKQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p><img src="/images/WX20220206-143535@2x.png" alt="图片"></p>
 <p>我们将各步骤总结精炼如下：</p>
 <ol>
 <li>通过 <code>SpringFactoriesLoader</code> 加载 <code>META-INF/spring.factories</code> 文件，获取并创建 <code>SpringApplicationRunListener</code> 对象</li>
