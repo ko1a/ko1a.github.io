@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on 阿强的blog</title>
+    <title>Posts on 阿强的学习笔记</title>
     <link>https://ko1a.github.io/post/</link>
-    <description>Recent content in Posts on 阿强的blog</description>
+    <description>Recent content in Posts on 阿强的学习笔记</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 19 Jan 2022 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/post/index.xml" rel="self" type="application/rss+xml" />
@@ -56,6 +56,33 @@ public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch 
     </item>
     
     <item>
+      <title>动态代理</title>
+      <link>https://ko1a.github.io/post/proxy/</link>
+      <pubDate>Tue, 23 Nov 2021 16:35:22 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/proxy/</guid>
+      <description>代理模式 代理模式是一种设计模式，提供了对目标对象额外的访问方式，即通过代理对象访问目标对象，这样可以在不修改原目标对象的前提下，提供额外的功能操作，扩展目标对象的功能
+一个比方：在租房的时候，有的人会通过房东直租，有的人会通过中介租房。
+这两种情况哪种比较方便呢？当然是通过中介更加方便。
+这里的中介就相当于代理，用户通过中介完成租房的一系列操作（看房、交押金、租房、清扫卫生）代理模式可以有效的将具体的实现与调用方进行解耦，通过面向接口进行编码完全将具体的实现隐藏在内部。
+分类：
+静态代理： 在编译时就已经实现，编译完成后代理类是一个实际的class文件
+动态代理： 在运行时动态生成的，即编译完成后没有实际的class文件，而是在运行时动态生成类字节码，并加载到JVM中
+静态代理 使用方式
+创建一个接口，然后创建被代理的类实现该接口并且实现该接口中的抽象方法。之后再创建一个代理类，同时使其也实现这个接口。在代理类中持有一个被代理对象的引用，而后在代理类方法中调用该对象的方法。
+public interface UserDao { void save(); } public class UserDaoImpl implements UserDao { @Override public void save() { System.out.println(&amp;#34;正在保存用户...&amp;#34;); } } public class TransactionHandler implements UserDao { //目标代理对象  private UserDao target; //构造代理对象时传入目标对象  public TransactionHandler(UserDao target) { this.target = target; } @Override public void save() { //调用目标方法前的处理  System.out.println(&amp;#34;开启事务控制...&amp;#34;); //调用目标对象的方法  target.save(); //调用目标方法后的处理  System.out.println(&amp;#34;关闭事务控制...&amp;#34;); } } public class Main { public static void main(String[] args) { //新建目标对象  UserDaoImpl target = new UserDaoImpl(); //创建代理对象, 并使用接口对其进行引用  UserDao userDao = new TransactionHandler(target); //针对接口进行调用  userDao.</description>
+    </item>
+    
+    <item>
+      <title>linux常用命令</title>
+      <link>https://ko1a.github.io/post/linuxml/</link>
+      <pubDate>Tue, 20 Jul 2021 18:03:21 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/linuxml/</guid>
+      <description>查看Linux系统信息 arch #显示机器的处理器架构(1) uname -m #显示机器的处理器架构(2) uname -r #显示正在使用的内核版本 dmidecode -q #显示硬件系统部件 - (SMBIOS / DMI) hdparm -i /dev/hda #罗列一个磁盘的架构特性 hdparm -tT /dev/sda #在磁盘上执行测试性读取操作 cat /proc/cpuinfo #显示CPU info的信息 cat /proc/interrupts #显示中断 cat /proc/meminfo #校验内存使用 cat /proc/swaps #显示哪些swap被使用 cat /proc/version #显示内核的版本 cat /proc/net/dev #显示网络适配器及统计 cat /proc/mounts #显示已加载的文件系统 lspci -tv #罗列PCI设备 lsusb -tv #显示USB设备 date 显示系统日期 cal 2007 #显示2007年的日历表 date 041217002007.00 #设置日期和时间 - 月日时分年.秒 clock -w #将时间修改保存到 BIOS 关机(关机、重启、登出 ) shutdown -h now #关闭系统(1) init 0 #关闭系统(2) telinit 0 #关闭系统(3) shutdown -h hours:minutes &amp;amp; #按预定时间关闭系统 shutdown -c #取消按预定时间关闭系统 shutdown -r now #重启(1) reboot #重启(2) logout #注销 文件和目录 cd /home #进入 &amp;#39;/ home&amp;#39; 目录&amp;#39; cd .</description>
+    </item>
+    
+    <item>
       <title>手撕HashMap(Jdk8)</title>
       <link>https://ko1a.github.io/post/blog2hashmap/</link>
       <pubDate>Sat, 19 Jun 2021 13:20:17 +0800</pubDate>
@@ -100,6 +127,26 @@ Java 中的二进制 //举个例子: //int占4个字节（byte） //1byte = 8bit
     </item>
     
     <item>
+      <title>关于Sql优化</title>
+      <link>https://ko1a.github.io/post/sqlyh/</link>
+      <pubDate>Thu, 13 May 2021 14:22:12 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/sqlyh/</guid>
+      <description>性能优化原则和分类 性能优化一般可以分为：
+ 主动优化 被动优化  所谓的主动优化是指不需要外力的推动而自发进行的一种行为，比如当服务没有明显的卡顿、宕机或者硬件指标异常的情况下，自我出发去优化的行为，就可以称之为主动优化。
+而被动优化刚好与主动优化相反，它是指在发现了服务器卡顿、服务异常或者物理指标异常的情况下，才去优化的这种行为。
+性能优化原则
+无论是主动优化还是被动优化都要符合以下性能优化的原则：
+ 优化不能改变服务运行的逻辑，要保证服务的正确性； 优化的过程和结果都要保证服务的安全性； 要保证服务的稳定性，不能为了追求性能牺牲程序的稳定性。比如不能为了提高 Redis 的运行速度，而关闭持久化的功能，因为这样在 Redis 服务器重启或者掉电之后会丢失存储的数据。  以上原则看似都是些废话，但却给了我们一个启发，那就是我们性能优化手段应该是：预防性能问题为主+被动优化为辅。
+也就是说，我们应该以预防性能问题为主，在开发阶段尽可能的规避性能问题，而在正常情况下，应尽量避免主动优化，以防止未知的风险（除非是为了 KPI，或者是闲的没事），尤其对生产环境而言更是如此，最后才是考虑被动优化。
+ PS：当遇到性能缓慢下降、或硬件指标缓慢增加的情况，如今天内存的占用率是 50%，明天是 70%，后天是 90% ，并且丝毫没有收回的迹象时，我们应该提早发现并处理此类问题（这种情况也属于被动优化的一种）。
+ MySQL 被动性能优化 所以我们本文会重点介绍 MySQL 被动性能优化的知识，根据被动性能优化的知识，你就可以得到预防性能问题发生的一些方法，从而规避 MySQL 的性能问题。
+本文我们会从问题入手，然后考虑这个问题产生的原因以及相应的优化方案。我们在实际开发中，通常会遇到以下 3 个问题：
+ 单条 SQL 运行慢； 部分 SQL 运行慢； 整个 SQL 运行慢。  问题 1：单条 SQL 运行慢 问题分析 造成单条 SQL 运行比较慢的常见原因有以下两个：
+ 未正常创建或使用索引； 表中数据量太大。  解决方案 1：创建并正确使用索引 索引是一种能帮助 MySQL 提高查询效率的主要手段，因此一般情况下我们遇到的单条 SQL 性能问题，通常都是由于未创建或为正确使用索引而导致的，所以在遇到单条 SQL 运行比较慢的情况下，你首先要做的就是检查此表的索引是否正常创建。</description>
+    </item>
+    
+    <item>
       <title>服务注册中心：eureka、zookeeper、consul</title>
       <link>https://ko1a.github.io/post/210312/</link>
       <pubDate>Wed, 30 Dec 2020 13:21:20 +0800</pubDate>
@@ -132,6 +179,27 @@ POM文件引入依赖
 &amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt; &amp;lt;beans xmlns=&amp;#34;http://www.springframework.org/schema/beans&amp;#34; xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34; xsi:schemaLocation=&amp;#34; http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd&amp;#34;&amp;gt; &amp;lt;bean id=&amp;#34;MyBean&amp;#34; class=&amp;#34;com.bean.MyBean&amp;#34;&amp;gt; &amp;lt;property name=&amp;#34;name&amp;#34; value=&amp;#34;阿强&amp;#34;/&amp;gt; &amp;lt;/bean&amp;gt; &amp;lt;/beans&amp;gt; 看一下@Configuration的内部实现
 @Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface Configuration { ... } 可以看到,它里面也用到了@Component 注解,意味着他也是个组件,将注册到spring 容器中
 @Configuration 注解在spring boot 2.0 之后新加了一个属性:proxyBeanMethods是用来指定@Bean注解标注的方法是否使用代理，默认是true使用代理，直接从IOC容器之中取得对象；如果设置为 false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，所以我们可以将此属性设置为false来提高性能</description>
+    </item>
+    
+    <item>
+      <title>Git操作与命令</title>
+      <link>https://ko1a.github.io/post/git1/</link>
+      <pubDate>Sat, 12 Sep 2020 15:02:31 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/git1/</guid>
+      <description>一、创建与合并分支
+1、 从master分支创建dev分支并切换到dev分支
+git checkout mastergit checkout -b dev 其中，git checkout -b dev 等价于:
+git branch devgit checkout dev （1）
+git branch 查看本地当前的分支，分支前面带“*”表示当前分支，剩下的分支表示本地有的分支。
+（2）
+git branch -a 查看远程全部的分支，白色的表示本地有的，红色的表示本地没有，仅在远程存在。
+2、修改代码、提交代码（当前的操作是在dev分支上进行）
+git add a.html git commit -m &amp;quot;提交文件a.html&amp;quot; 3、分支合并(将dev合并到master)
+git checkout master git merge dev 4、合并完成后，删除dev分支.(删除dev分支时，注意我们当前所在的分支不能是dev分支)
+git branch -d dev 5、删除后，查看分支(此时看不到dev分支了)
+git branch 6、总结 ：工作中经常从master创建新的分支，具体操作如下:
+master创建新分支： git checkout master git checkout -b issues1234 // 从master分支创建issues1234分支 git push origin issues1234 git add .. git commit -m &amp;quot;***&amp;quot; git push origin issues1234  注意：将本地分支branch1推到远端的branch2操作步骤：</description>
     </item>
     
     <item>

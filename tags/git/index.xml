@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Git on 阿强的学习笔记</title>
+    <link>https://ko1a.github.io/tags/git/</link>
+    <description>Recent content in Git on 阿强的学习笔记</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 13 May 2021 14:22:12 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于Sql优化</title>
+      <link>https://ko1a.github.io/post/sqlyh/</link>
+      <pubDate>Thu, 13 May 2021 14:22:12 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/sqlyh/</guid>
+      <description>性能优化原则和分类 性能优化一般可以分为：
+ 主动优化 被动优化  所谓的主动优化是指不需要外力的推动而自发进行的一种行为，比如当服务没有明显的卡顿、宕机或者硬件指标异常的情况下，自我出发去优化的行为，就可以称之为主动优化。
+而被动优化刚好与主动优化相反，它是指在发现了服务器卡顿、服务异常或者物理指标异常的情况下，才去优化的这种行为。
+性能优化原则
+无论是主动优化还是被动优化都要符合以下性能优化的原则：
+ 优化不能改变服务运行的逻辑，要保证服务的正确性； 优化的过程和结果都要保证服务的安全性； 要保证服务的稳定性，不能为了追求性能牺牲程序的稳定性。比如不能为了提高 Redis 的运行速度，而关闭持久化的功能，因为这样在 Redis 服务器重启或者掉电之后会丢失存储的数据。  以上原则看似都是些废话，但却给了我们一个启发，那就是我们性能优化手段应该是：预防性能问题为主+被动优化为辅。
+也就是说，我们应该以预防性能问题为主，在开发阶段尽可能的规避性能问题，而在正常情况下，应尽量避免主动优化，以防止未知的风险（除非是为了 KPI，或者是闲的没事），尤其对生产环境而言更是如此，最后才是考虑被动优化。
+ PS：当遇到性能缓慢下降、或硬件指标缓慢增加的情况，如今天内存的占用率是 50%，明天是 70%，后天是 90% ，并且丝毫没有收回的迹象时，我们应该提早发现并处理此类问题（这种情况也属于被动优化的一种）。
+ MySQL 被动性能优化 所以我们本文会重点介绍 MySQL 被动性能优化的知识，根据被动性能优化的知识，你就可以得到预防性能问题发生的一些方法，从而规避 MySQL 的性能问题。
+本文我们会从问题入手，然后考虑这个问题产生的原因以及相应的优化方案。我们在实际开发中，通常会遇到以下 3 个问题：
+ 单条 SQL 运行慢； 部分 SQL 运行慢； 整个 SQL 运行慢。  问题 1：单条 SQL 运行慢 问题分析 造成单条 SQL 运行比较慢的常见原因有以下两个：
+ 未正常创建或使用索引； 表中数据量太大。  解决方案 1：创建并正确使用索引 索引是一种能帮助 MySQL 提高查询效率的主要手段，因此一般情况下我们遇到的单条 SQL 性能问题，通常都是由于未创建或为正确使用索引而导致的，所以在遇到单条 SQL 运行比较慢的情况下，你首先要做的就是检查此表的索引是否正常创建。</description>
+    </item>
+    
+    <item>
+      <title>Git操作与命令</title>
+      <link>https://ko1a.github.io/post/git1/</link>
+      <pubDate>Sat, 12 Sep 2020 15:02:31 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/git1/</guid>
+      <description>一、创建与合并分支
+1、 从master分支创建dev分支并切换到dev分支
+git checkout mastergit checkout -b dev 其中，git checkout -b dev 等价于:
+git branch devgit checkout dev （1）
+git branch 查看本地当前的分支，分支前面带“*”表示当前分支，剩下的分支表示本地有的分支。
+（2）
+git branch -a 查看远程全部的分支，白色的表示本地有的，红色的表示本地没有，仅在远程存在。
+2、修改代码、提交代码（当前的操作是在dev分支上进行）
+git add a.html git commit -m &amp;quot;提交文件a.html&amp;quot; 3、分支合并(将dev合并到master)
+git checkout master git merge dev 4、合并完成后，删除dev分支.(删除dev分支时，注意我们当前所在的分支不能是dev分支)
+git branch -d dev 5、删除后，查看分支(此时看不到dev分支了)
+git branch 6、总结 ：工作中经常从master创建新的分支，具体操作如下:
+master创建新分支： git checkout master git checkout -b issues1234 // 从master分支创建issues1234分支 git push origin issues1234 git add .. git commit -m &amp;quot;***&amp;quot; git push origin issues1234  注意：将本地分支branch1推到远端的branch2操作步骤：</description>
+    </item>
+    
+  </channel>
+</rss>

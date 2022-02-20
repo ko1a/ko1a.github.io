@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>spring on 阿强的blog</title>
+    <title>spring on 阿强的学习笔记</title>
     <link>https://ko1a.github.io/tags/spring/</link>
-    <description>Recent content in spring on 阿强的blog</description>
+    <description>Recent content in spring on 阿强的学习笔记</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 19 Jan 2022 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml" />

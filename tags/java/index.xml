@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Java on 阿强的blog</title>
+    <title>Java on 阿强的学习笔记</title>
     <link>https://ko1a.github.io/tags/java/</link>
-    <description>Recent content in Java on 阿强的blog</description>
+    <description>Recent content in Java on 阿强的学习笔记</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 19 Jan 2022 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
@@ -53,6 +53,24 @@ SpringApplication.run(Application.class, args); 便开启了项目的启动运�
 四个关键的步骤已标注在图中，分别解释如下：
  ① 推断应用的类型：创建的是REACTIVE应用、SERVLET应用、NONE 三种中的某一种   ② 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中所有可用的 ApplicationContextInitializer   ③ 使用SpringFactoriesLoader查找并加载classpath下META-INF/spring.factories文件中的所有可用的 ApplicationListener   ④ 推断并设置main方法的定义类  2.SpringApplication的run()方法 看代码长啥样子：
 public ConfigurableApplicationContext run(String... args) { StopWatch stopWatch = new StopWatch(); stopWatch.start(); ConfigurableApplicationContext context = null; Collection&amp;lt;SpringBootExceptionReporter&amp;gt; exceptionReporters = new ArrayList(); this.</description>
+    </item>
+    
+    <item>
+      <title>动态代理</title>
+      <link>https://ko1a.github.io/post/proxy/</link>
+      <pubDate>Tue, 23 Nov 2021 16:35:22 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/post/proxy/</guid>
+      <description>代理模式 代理模式是一种设计模式，提供了对目标对象额外的访问方式，即通过代理对象访问目标对象，这样可以在不修改原目标对象的前提下，提供额外的功能操作，扩展目标对象的功能
+一个比方：在租房的时候，有的人会通过房东直租，有的人会通过中介租房。
+这两种情况哪种比较方便呢？当然是通过中介更加方便。
+这里的中介就相当于代理，用户通过中介完成租房的一系列操作（看房、交押金、租房、清扫卫生）代理模式可以有效的将具体的实现与调用方进行解耦，通过面向接口进行编码完全将具体的实现隐藏在内部。
+分类：
+静态代理： 在编译时就已经实现，编译完成后代理类是一个实际的class文件
+动态代理： 在运行时动态生成的，即编译完成后没有实际的class文件，而是在运行时动态生成类字节码，并加载到JVM中
+静态代理 使用方式
+创建一个接口，然后创建被代理的类实现该接口并且实现该接口中的抽象方法。之后再创建一个代理类，同时使其也实现这个接口。在代理类中持有一个被代理对象的引用，而后在代理类方法中调用该对象的方法。
+public interface UserDao { void save(); } public class UserDaoImpl implements UserDao { @Override public void save() { System.out.println(&amp;#34;正在保存用户...&amp;#34;); } } public class TransactionHandler implements UserDao { //目标代理对象  private UserDao target; //构造代理对象时传入目标对象  public TransactionHandler(UserDao target) { this.target = target; } @Override public void save() { //调用目标方法前的处理  System.out.println(&amp;#34;开启事务控制...&amp;#34;); //调用目标对象的方法  target.save(); //调用目标方法后的处理  System.out.println(&amp;#34;关闭事务控制...&amp;#34;); } } public class Main { public static void main(String[] args) { //新建目标对象  UserDaoImpl target = new UserDaoImpl(); //创建代理对象, 并使用接口对其进行引用  UserDao userDao = new TransactionHandler(target); //针对接口进行调用  userDao.</description>
     </item>
     
     <item>

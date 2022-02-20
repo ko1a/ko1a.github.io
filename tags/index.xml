@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on 阿强的blog</title>
+    <title>Tags on 阿强的学习笔记</title>
     <link>https://ko1a.github.io/tags/</link>
-    <description>Recent content in Tags on 阿强的blog</description>
+    <description>Recent content in Tags on 阿强的学习笔记</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 19 Jan 2022 13:20:17 +0800</lastBuildDate><atom:link href="https://ko1a.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
@@ -44,11 +44,38 @@
     </item>
     
     <item>
+      <title>设计模式</title>
+      <link>https://ko1a.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 23 Nov 2021 16:35:22 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://ko1a.github.io/tags/linux/</link>
+      <pubDate>Tue, 20 Jul 2021 18:03:21 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>hashMap</title>
       <link>https://ko1a.github.io/tags/hashmap/</link>
       <pubDate>Sat, 19 Jun 2021 13:20:17 +0800</pubDate>
       
       <guid>https://ko1a.github.io/tags/hashmap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>https://ko1a.github.io/tags/git/</link>
+      <pubDate>Thu, 13 May 2021 14:22:12 +0800</pubDate>
+      
+      <guid>https://ko1a.github.io/tags/git/</guid>
       <description></description>
     </item>
     
